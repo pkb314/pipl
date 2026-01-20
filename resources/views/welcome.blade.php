@@ -47,50 +47,61 @@
 </nav>
 
 <header class="relative pt-32 pb-20 md:pt-48 md:pb-32 bg-pipl-graphite text-white overflow-hidden">
+
     <div class="absolute inset-0 z-0">
-        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80" alt="Profesjonalne biuro" class="w-full h-full object-cover opacity-20">
-        <div class="absolute inset-0 bg-gradient-to-b from-pipl-graphite/95 to-pipl-graphite"></div>
+        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80"
+             alt="Siedziba Izby Gospodarczej"
+             class="w-full h-full object-cover opacity-30">
+
+        <div class="absolute inset-0 bg-gradient-to-r from-pipl-graphite/95 via-pipl-graphite/80 to-pipl-graphite/90"></div>
     </div>
 
     <div class="relative z-10 container mx-auto px-4 md:px-6 text-center max-w-5xl">
-        <div class="inline-flex items-center gap-2 py-2 px-4 border border-gray-600 bg-white/5 rounded-full text-sm font-medium tracking-wide uppercase mb-8 backdrop-blur-sm">
-            <span class="w-2 h-2 rounded-full bg-green-500"></span>
+
+        <div class="inline-flex items-center gap-2 py-2 px-4 border border-gray-600 bg-white/5 rounded-full text-xs md:text-sm font-medium tracking-wide uppercase mb-8 backdrop-blur-sm shadow-lg">
+            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
             Oficjalna Organizacja Samorządu Gospodarczego
         </div>
 
-        <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+        <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight drop-shadow-lg">
             Skuteczna reprezentacja <br class="hidden md:block">
             Twoich interesów.
         </h1>
 
-        <h2 class="text-xl md:text-3xl text-gray-200 font-light mb-8">
+        <h2 class="text-xl md:text-3xl text-gray-100 font-light mb-8 drop-shadow-md">
             Jesteśmy <span class="text-pipl-red font-bold">IZBĄ GOSPODARCZĄ</span> – Twoim partnerem w rozmowach z urzędami i gwarantem bezpieczeństwa prawnego.
         </h2>
 
-        <p class="text-lg text-gray-400 font-light max-w-3xl mx-auto mb-10">
-            Zapewniamy realne wsparcie dla mikro i małych przedsiębiorstw. Nie walcz z biurokracją w pojedynkę.
+        <p class="text-lg text-gray-300 font-light max-w-3xl mx-auto mb-10 leading-relaxed">
+            Zapewniamy realne wsparcie dla mikro i małych przedsiębiorstw. <br class="hidden md:block"> Nie walcz z biurokracją w pojedynkę.
         </p>
 
         <div class="flex flex-col md:flex-row justify-center gap-4">
-            <a href="#formularz" class="bg-pipl-red hover:bg-red-700 text-white font-bold py-4 px-10 rounded-lg text-lg transition duration-300 shadow-lg shadow-red-900/20 transform hover:-translate-y-1">
+            <a href="#formularz" class="bg-pipl-red hover:bg-red-700 text-white font-bold py-4 px-10 rounded-lg text-lg transition duration-300 shadow-xl shadow-red-900/30 transform hover:-translate-y-1 ring-1 ring-white/20">
                 Dołącz do Izby
             </a>
-            <a href="#dlaczego" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold py-4 px-8 rounded-lg text-lg transition duration-300 backdrop-blur-sm">
+            <a href="#dlaczego" class="bg-white/5 hover:bg-white/10 border border-white/30 text-white font-semibold py-4 px-8 rounded-lg text-lg transition duration-300 backdrop-blur-sm">
                 Dowiedz się więcej
             </a>
         </div>
 
-        <div class="mt-12 pt-8 border-t border-gray-700/50 flex flex-wrap justify-center gap-8 md:gap-16 text-gray-400 text-sm md:text-base">
-            <div class="flex items-center gap-2">
-                <svg class="w-5 h-5 text-pipl-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <div class="mt-16 pt-8 border-t border-gray-700/50 flex flex-wrap justify-center gap-6 md:gap-16 text-gray-300 text-sm md:text-base font-medium">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-white/10 rounded-full">
+                    <svg class="w-5 h-5 text-pipl-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
                 <span>Zweryfikowani Członkowie</span>
             </div>
-            <div class="flex items-center gap-2">
-                <svg class="w-5 h-5 text-pipl-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-white/10 rounded-full">
+                    <svg class="w-5 h-5 text-pipl-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                </div>
                 <span>Współpraca z Urzędami</span>
             </div>
-            <div class="flex items-center gap-2">
-                <svg class="w-5 h-5 text-pipl-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-white/10 rounded-full">
+                    <svg class="w-5 h-5 text-pipl-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                </div>
                 <span>Siła Społeczności</span>
             </div>
         </div>
