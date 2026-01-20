@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{{ asset('logo.jpeg') }}" type="image/jpeg">
     <title>Polska Izba Przedsiębiorców Lokalnych - Dołącz do nas</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -36,7 +37,8 @@
 <nav class="bg-white border-b border-gray-100 py-4 fixed w-full z-50 top-0 shadow-sm">
     <div class="container mx-auto px-4 md:px-6 flex items-center justify-between">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-pipl-red rounded flex items-center justify-center text-white font-bold text-xl">P</div>
+            <img src="{{ asset('logo.jpeg') }}" alt="Logo PIPL" class="h-12 w-auto object-contain">
+
             <div>
                 <span class="block text-sm font-bold leading-tight text-pipl-graphite">POLSKA IZBA</span>
                 <span class="block text-xs uppercase tracking-wider text-gray-500">Przedsiębiorców Lokalnych</span>
