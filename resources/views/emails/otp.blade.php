@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weryfikacja Zgłoszenia - PIPL</title>
+    <title>Potwierdzenie zainteresowania - PIPL</title>
     <style>
         body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
         table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
@@ -50,33 +50,37 @@
                 <tr>
                     <td class="content" style="padding: 40px 40px 20px 40px; color: #374151; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 16px; line-height: 1.6;">
 
-                        <h2 style="margin: 0 0 20px 0; color: #111827; font-size: 22px; font-weight: 700;">Wymagana autoryzacja zgłoszenia</h2>
+                        <h2 style="margin: 0 0 20px 0; color: #111827; font-size: 22px; font-weight: 700;">Dziękujemy za zainteresowanie</h2>
 
                         <p style="margin-bottom: 20px;">
                             Szanowny Przedsiębiorco,
                         </p>
 
                         <p style="margin-bottom: 20px;">
-                            Otrzymaliśmy wniosek o kontakt i dołączenie do <strong>Polskiej Izby Przedsiębiorców Lokalnych</strong>. Aby zachować najwyższe standardy bezpieczeństwa i potwierdzić Twoją tożsamość, wymagana jest weryfikacja adresu e-mail.
+                            Dziękujemy za wypełnienie formularza i chęć poznania szczegółów działalności <strong>Polskiej Izby Przedsiębiorców Lokalnych</strong>.
+                        </p>
+
+                        <p style="margin-bottom: 20px;">
+                            Abyśmy mogli skontaktować się z Tobą i przedstawić korzyści płynące z członkostwa w Izbie, prosimy o <strong>potwierdzenie poprawności Twojego adresu e-mail</strong>.
                         </p>
 
                         <p style="margin-bottom: 30px;">
-                            Kliknij poniższy przycisk, aby sfinalizować proces i przekazać Twoje zgłoszenie do odpowiedniego Koordynatora Regionalnego.
+                            Kliknij poniższy przycisk – to niezobowiązujący krok, który pozwoli nam zweryfikować kontakt.
                         </p>
 
                         <table border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
                                 <td align="center" style="padding: 10px 0 30px 0;">
                                     <a href="{{ $verificationUrl }}" class="button" style="background-color: #D71920; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block; font-size: 15px; text-transform: uppercase;">
-                                        Potwierdzam zgłoszenie
+                                        Potwierdzam adres e-mail
                                     </a>
                                 </td>
                             </tr>
                         </table>
 
                         <p style="font-size: 14px; color: #6B7280; margin-top: 20px; border-top: 1px solid #E5E7EB; padding-top: 20px;">
-                            <strong>Dlaczego otrzymujesz tę wiadomość?</strong><br>
-                            Ten link jest aktywny przez 60 minut. Jeśli to nie Ty wypełniałeś formularz na stronie PIPL, prosimy o zignorowanie tej wiadomości – Twoje dane nie zostaną zapisane w systemie.
+                            <strong>Dlaczego to wymagane?</strong><br>
+                            Weryfikacja zapobiega pomyłkom w komunikacji i chroni Twoje dane. Link jest aktywny przez 60 minut.
                         </p>
                     </td>
                 </tr>
@@ -88,13 +92,13 @@
                             Wszelkie prawa zastrzeżone.
                         </p>
                         <p style="margin: 0;">
-                            Wiadomość wygenerowana automatycznie. Prosimy na nią nie odpowiadać.<br>
-                            <a href="{{ $verificationUrl }}" style="color: #9CA3AF; text-decoration: underline;">Link nie działa? Kliknij tutaj</a>
+                            <a href="{{ $verificationUrl }}" style="color: #9CA3AF; text-decoration: underline;">Problem z przyciskiem? Kliknij tutaj</a>
                         </p>
                     </td>
                 </tr>
 
             </table>
+
         </td>
     </tr>
 </table>
