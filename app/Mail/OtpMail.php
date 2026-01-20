@@ -8,18 +8,18 @@ use Illuminate\Queue\SerializesModels;
 
 class OtpMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use SerializesModels;
 
-    public $code;
+    public $verificationUrl;
 
-    public function __construct($code)
+    public function __construct($verificationUrl)
     {
-        $this->code = $code;
+        $this->verificationUrl = $verificationUrl;
     }
 
     public function build()
     {
-        return $this->subject('Twój kod weryfikacyjny PIPL')
+        return $this->subject('Potwierdź zgłoszenie - PIPL')
             ->view('emails.otp');
     }
 }

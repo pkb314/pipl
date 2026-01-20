@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class FormController extends Controller
 {
@@ -41,49 +42,34 @@ class FormController extends Controller
 
         $validated = $validator->validated();
 
-        $otpCode = rand(100000, 999999);
+        $token = Str::random(40);
 
         Session::put('lead_data', $validated);
-        Session::put('otp_code', $otpCode);
+        Session::put('verification_token', $token);
+
+        $url = route('verification.verify', ['token' => $token]);
 
         try {
-            Mail::to($validated['email'])->send(new OtpMail($otpCode));
+            Mail::to($validated['email'])->send(new OtpMail($url));
         } catch (\Exception $e) {
             return back()
                 ->with('error', 'Nie udało się wysłać maila. Sprawdź adres lub ustawienia SMTP.')
                 ->withFragment('formularz');
         }
 
-        return redirect()->route('otp.verify.page');
+        return back()->with('email_sent', true)->withFragment('formularz');
     }
 
-    public function showVerifyPage()
+    public function verifyLink($token)
     {
-        if (!Session::has('lead_data')) {
-            return redirect('/');
-        }
-
-        $email = Session::get('lead_data')['email'];
-        return view('verify', compact('email'));
-    }
-
-    public function verifyOtp(Request $request)
-    {
-        $request->validate([
-            'otp' => 'required|numeric',
-        ], ['otp.required' => 'Wpisz kod otrzymany w mailu.']);
-
-        $sessionOtp = Session::get('otp_code');
+        $sessionToken = Session::get('verification_token');
         $leadData = Session::get('lead_data');
 
-        if (!$sessionOtp || !$leadData) {
-            return redirect('/')
-                ->with('error', 'Sesja wygasła. Wypełnij formularz ponownie.')
-                ->withFragment('formularz');
+        if (!$sessionToken || $token !== $sessionToken || !$leadData) {
+            return redirect('/')->with('error', 'Link weryfikacyjny wygasł lub jest nieprawidłowy. Wypełnij formularz ponownie.')->withFragment('formularz');
         }
 
-        if ($request->otp == $sessionOtp) {
-
+        try {
             $contactId = app(Bitrix24Service::class)->useWebhook('crm')->createContact([
                 'NAME' => $leadData['name'],
                 'LAST_NAME' => $leadData['surname'],
@@ -98,15 +84,15 @@ class FormController extends Controller
                 'ufCrm54_1768830552149' => $leadData['company'],
             ], 1140);
 
-            Session::forget(['lead_data', 'otp_code']);
+            Session::forget(['lead_data', 'verification_token']);
 
-            return redirect('/')->with('success', 'Weryfikacja pomyślna! Skontaktujemy się z Tobą.')
-                ->withFragment('formularz');
+            return redirect('/')->with('success', 'Weryfikacja pomyślna!')->withFragment('formularz');
 
-        } else {
-            return back()->withErrors(['otp' => 'Błędny kod. Sprawdź maila i spróbuj ponownie.']);
+        } catch (\Exception $e) {
+            return redirect('/')->with('error', 'Błąd połączenia z systemem CRM. Spróbuj później.')->withFragment('formularz');
         }
     }
+
+
 }
 
-https://github.com/pkb314/pipl.git
