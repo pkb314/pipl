@@ -43,7 +43,7 @@
             </div>
         </div>
         <a href="#formularz" class="hidden md:inline-block bg-pipl-graphite text-white text-sm font-semibold px-5 py-2 rounded hover:bg-gray-800 transition">
-            Zostań Członkiem
+            Dowiedz się więcej
         </a>
     </div>
 </nav>
@@ -77,11 +77,9 @@
 
         <div class="flex flex-col md:flex-row justify-center gap-4">
             <a href="#formularz" class="bg-pipl-red hover:bg-red-700 text-white font-bold py-4 px-10 rounded-lg text-lg transition duration-300 shadow-xl shadow-red-900/30 transform hover:-translate-y-1 ring-1 ring-white/20">
-                Dołącz do Izby
-            </a>
-            <a href="#dlaczego" class="bg-white/5 hover:bg-white/10 border border-white/30 text-white font-semibold py-4 px-8 rounded-lg text-lg transition duration-300 backdrop-blur-sm">
                 Dowiedz się więcej
             </a>
+
         </div>
     </div>
 </header>
