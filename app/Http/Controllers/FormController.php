@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\OtpMail;
 use App\Services\Bitrix24Service;
+use App\Services\GoogleSheetsLeadService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
@@ -41,7 +42,6 @@ class FormController extends Controller
         }
 
         $validated = $validator->validated();
-
         $token = Str::random(40);
 
         Session::put('lead_data', $validated);
@@ -53,7 +53,7 @@ class FormController extends Controller
             Mail::to($validated['email'])->send(new OtpMail($url));
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'Nie udało się wysłać maila. Sprawdź adres lub ustawienia SMTP.')
+                ->with('error', 'Nie udało się wysłać wiadomości e-mail. Sprawdź adres lub ustawienia SMTP.')
                 ->withFragment('formularz');
         }
 
@@ -66,15 +66,17 @@ class FormController extends Controller
         $leadData = Session::get('lead_data');
 
         if (!$sessionToken || $token !== $sessionToken || !$leadData) {
-            return redirect('/')->with('error', 'Link weryfikacyjny wygasł lub jest nieprawidłowy. Wypełnij formularz ponownie.')->withFragment('formularz');
+            return redirect('/')
+                ->with('error', 'Link weryfikacyjny wygasł lub jest nieprawidłowy. Wypełnij formularz ponownie.')
+                ->withFragment('formularz');
         }
 
         try {
             $contactId = app(Bitrix24Service::class)->useWebhook('crm')->createContact([
                 'NAME' => $leadData['name'],
                 'LAST_NAME' => $leadData['surname'],
-                'EMAIL' => [['VALUE_TYPE' => 'WORK','VALUE' => $leadData['email']]],
-                'PHONE' => [['VALUE_TYPE' => 'WORK','VALUE' => $leadData['phone']]],
+                'EMAIL' => [['VALUE_TYPE' => 'WORK', 'VALUE' => $leadData['email']]],
+                'PHONE' => [['VALUE_TYPE' => 'WORK', 'VALUE' => $leadData['phone']]],
             ]);
 
             app(Bitrix24Service::class)->useWebhook('crm')->addEntity([
@@ -84,15 +86,15 @@ class FormController extends Controller
                 'ufCrm54_1768830552149' => $leadData['company'],
             ], 1140);
 
+            app(GoogleSheetsLeadService::class)->appendLead($leadData);
+
             Session::forget(['lead_data', 'verification_token']);
 
             return redirect('/')->with('success', 'Weryfikacja pomyślna!')->withFragment('formularz');
-
         } catch (\Exception $e) {
-            return redirect('/')->with('error', 'Błąd połączenia z systemem CRM. Spróbuj później.')->withFragment('formularz');
+            return redirect('/')
+                ->with('error', 'Błąd przekazania zgłoszenia. Spróbuj później.')
+                ->withFragment('formularz');
         }
     }
-
-
 }
-
