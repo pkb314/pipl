@@ -35,4 +35,17 @@ return [
         ],
     ],
 
+    'przelewy24' => [
+        'url' => env('PRZELEWY24_URL', 'https://sandbox.przelewy24.pl'),
+        'merchant_id' => env('PRZELEWY24_MERCHANT_ID'),
+        'pos_id' => env('PRZELEWY24_POS_ID', env('PRZELEWY24_MERCHANT_ID')),
+        'api_key' => env('PRZELEWY24_API_KEY'),
+        'crc' => env('PRZELEWY24_CRC'),
+        'currency' => env('PRZELEWY24_CURRENCY', 'PLN'),
+    ],
+
+    'google_sheets' => [
+        'webhook_url' => env('GOOGLE_SHEETS_WEBHOOK_URL'),
+    ],
+
 ];

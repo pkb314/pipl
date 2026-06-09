@@ -12,6 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
+        $middleware->validateCsrfTokens(except: [
+            'platnosci/przelewy24/status',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
