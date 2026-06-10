@@ -214,8 +214,8 @@
         <section class="bg-pipl-ink py-20 text-white md:py-24">
             <div class="mx-auto grid max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-[.9fr_1.1fr]">
                 <div class="reveal">
-                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
-                         alt="Spotkanie przedsiębiorców"
+                    <img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+                         alt="Nowoczesna przestrzeń biurowa"
                          class="aspect-[4/3] w-full rounded object-cover shadow-quiet">
                 </div>
                 <div class="reveal self-center">
