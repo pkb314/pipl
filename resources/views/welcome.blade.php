@@ -333,6 +333,14 @@
                                     <input type="text" name="company" value="{{ old('company') }}" class="field w-full rounded border @error('company') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100" placeholder="Nazwa przedsiębiorstwa" required>
                                 </div>
                                 <div class="col-span-2 md:col-span-1">
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Adres</label>
+                                    <input type="text" name="adres" value="{{ old('adres') }}" class="field w-full rounded border @error('adres') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100" placeholder="Ulica, numer, kod pocztowy, miasto" required>
+                                </div>
+                                <div class="col-span-2 md:col-span-1">
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Gmina</label>
+                                    <input type="text" name="gmina" value="{{ old('gmina') }}" class="field w-full rounded border @error('gmina') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100" placeholder="Nazwa gminy" required>
+                                </div>
+                                <div class="col-span-2 md:col-span-1">
                                     <label class="mb-2 block text-sm font-bold text-pipl-graphite">Telefon</label>
                                     <input type="tel" name="phone" value="{{ old('phone') }}" class="field w-full rounded border @error('phone') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100" placeholder="+48 000 000 000" required>
                                 </div>

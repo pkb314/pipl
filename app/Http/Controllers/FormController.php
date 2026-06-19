@@ -19,6 +19,8 @@ class FormController extends Controller
             'name' => 'required|string|max:50',
             'surname' => 'required|string|max:50',
             'company' => 'required|string|max:100',
+            'adres' => 'required|string|max:255',
+            'gmina' => 'required|string|max:100',
             'email' => 'required|email',
             'phone' => 'required|string|min:9',
         ], [
@@ -28,6 +30,10 @@ class FormController extends Controller
             'surname.max' => 'Nazwisko nie może być dłuższe niż :max znaków.',
             'company.required' => 'Nazwa firmy jest konieczna do zgłoszenia.',
             'company.max' => 'Nazwa firmy jest zbyt długa (max :max znaków).',
+            'adres.required' => 'Podaj adres firmy.',
+            'adres.max' => 'Adres jest zbyt długi (max :max znaków).',
+            'gmina.required' => 'Podaj gminę.',
+            'gmina.max' => 'Nazwa gminy jest zbyt długa (max :max znaków).',
             'email.required' => 'Adres e-mail jest wymagany.',
             'email.email' => 'Wpisz poprawny adres e-mail (np. jan@firma.pl).',
             'phone.required' => 'Numer telefonu jest wymagany do kontaktu.',
@@ -84,6 +90,8 @@ class FormController extends Controller
                 'contactId' => $contactId,
                 'title' => 'Zgłoszenie z dnia ' . date('Y.m.d'),
                 'ufCrm54_1768830552149' => $leadData['company'],
+                'ufCrm54_1781878744225' => $leadData['adres'],
+                'ufCrm54_1781878757270' => $leadData['gmina'],
             ], 1140);
 
             app(GoogleSheetsLeadService::class)->appendLead($leadData);
