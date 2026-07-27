@@ -36,6 +36,7 @@
         }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
     <style>
         html { scroll-behavior: smooth; }
         body { font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
@@ -89,6 +90,71 @@
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
             .reveal { opacity: 1; transform: none; transition: none; }
+        }
+        .ts-wrapper {
+            position: relative;
+            width: 100%;
+            border-radius: 0.25rem;
+            border: 1px solid #D9DDD9;
+            background: #F6F4EF;
+            padding: 0;
+        }
+        .ts-wrapper:focus-within {
+            border-color: #A8242D;
+            box-shadow: 0 0 0 4px rgba(168, 36, 45, 0.1);
+        }
+        .ts-wrapper .ts-control {
+            border: none;
+            background: transparent;
+            box-shadow: none;
+            padding: 1rem;
+            font-size: 1rem;
+            border-radius: 0;
+            outline: none;
+        }
+        .ts-wrapper .ts-control .ts-input {
+            color: #182126;
+            padding: 0;
+        }
+        .ts-wrapper .ts-control .ts-input::placeholder {
+            color: #65727C;
+        }
+        .ts-wrapper .ts-dropdown {
+            border: 1px solid #D9DDD9;
+            border-radius: 0;
+            background: #fff;
+            box-shadow: 0 18px 48px rgba(24, 33, 38, 0.15);
+            max-height: 240px;
+            z-index: 50;
+        }
+        .ts-wrapper .ts-dropdown .ts-dropdown-content {
+            max-height: 240px;
+        }
+        .ts-wrapper .ts-dropdown .option,
+        .ts-wrapper .ts-dropdown .option.active {
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            color: #344047;
+        }
+        .ts-wrapper .ts-dropdown .option.selected,
+        .ts-wrapper .ts-dropdown .option.active.selected {
+            background: #A8242D;
+            color: #fff;
+        }
+        .ts-wrapper .ts-dropdown .option:hover {
+            background: #F6F4EF;
+        }
+        .ts-wrapper .ts-dropdown .option.selected:hover,
+        .ts-wrapper .ts-dropdown .option.active.selected:hover {
+            background: #7D1920;
+        }
+        .ts-wrapper.has-items .ts-control {
+            color: #182126;
+        }
+        .ts-wrapper .ts-control .item {
+            color: #182126;
+            font-size: 1rem;
         }
     </style>
 </head>
@@ -338,7 +404,8 @@
                                 </div>
                                 <div class="col-span-2 md:col-span-1">
                                     <label class="mb-2 block text-sm font-bold text-pipl-graphite">Gmina</label>
-                                    <input type="text" name="gmina" value="{{ old('gmina') }}" class="field w-full rounded border @error('gmina') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100" placeholder="Nazwa gminy" required>
+                                    <select id="gmina-select" placeholder="Nazwa gminy" required></select>
+                                    <input type="hidden" name="gmina" id="gmina-hidden" value="{{ old('gmina') }}">
                                 </div>
                                 <div class="col-span-2 md:col-span-1">
                                     <label class="mb-2 block text-sm font-bold text-pipl-graphite">Telefon</label>
@@ -413,6 +480,7 @@
     </footer>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const siteNav = document.getElementById('siteNav');
@@ -447,6 +515,42 @@
         if (formSection) {
             formSection.scrollIntoView({ behavior: 'smooth' });
         }
+        @endif
+
+        const gminaSelect = new TomSelect('#gmina-select', {
+            valueField: 'value',
+            labelField: 'label',
+            searchField: ['value', 'label'],
+            create: false,
+            maxOptions: 30,
+            placeholder: 'Nazwa gminy',
+            preload: false,
+            render: {
+                option: function(data, escape) {
+                    return '<div class="py-2 px-3">' +
+                        '<span class="font-bold">' + escape(data.value) + '</span>' +
+                        ' <span class="text-pipl-steel text-sm">(pow. ' + escape(data.powiat) + ', woj. ' + escape(data.wojewodztwo) + ')</span>' +
+                        '</div>';
+                },
+                item: function(data, escape) {
+                    return '<div>' + escape(data.value) + '</div>';
+                }
+            },
+            load: function(query, callback) {
+                if (!query.length || query.length < 1) return callback();
+                fetch('/api/gminy?q=' + encodeURIComponent(query))
+                    .then(r => r.json())
+                    .then(callback)
+                    .catch(() => callback());
+            },
+            onChange: function(value) {
+                document.getElementById('gmina-hidden').value = value;
+            }
+        });
+
+        @if (old('gmina'))
+        gminaSelect.addOption({ value: '{{ old('gmina') }}', label: '{{ old('gmina') }}' });
+        gminaSelect.setValue('{{ old('gmina') }}');
         @endif
     });
 </script>

@@ -21,7 +21,7 @@ class Bitrix24Service
     public function useWebhook(string $name): self
     {
         $webhooks = [
-            'crm' => 'https://klub.bitrix24.pl/rest/46/kdk2cxx7i7n6k6ls/'
+            'crm' => 'https://klub.bitrix24.pl/rest/46/1her5x80u7wduxmu/'
         ];
 
 

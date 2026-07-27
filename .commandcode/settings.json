@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Shell(dir:*)",
+      "Shell(docker:*)",
+      "Shell(findstr:*)",
+      "Shell(docker compose exec app cat storage/logs/laravel.log 2>nul || docker compose exec app tail -100 storage/logs/laravel.log)"
+    ],
+    "deny": [],
+    "defaultMode": "default"
+  }
+}

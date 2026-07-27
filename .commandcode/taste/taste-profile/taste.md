@@ -1,0 +1,18 @@
+# Taste Profile
+- Communicates in Polish; prefers responses and interface text in Polish. Confidence: 0.95
+- Direct and blunt communicator — will explicitly call out low-quality work without hesitation. Confidence: 0.9
+- Frustrated by technical jargon or implementation details being surfaced — cares about results, not process (e.g. "kogo obchodzi html czy pdf??????"). Confidence: 0.85
+- Demands professional, polished UI/UX — explicitly rejects junior-level output with weak color choices, simple shapes, basic animations, and poor typography. Confidence: 0.95
+- Expects smooth, refined animations and transitions — not basic or generic effects. Confidence: 0.9
+- Wants authoritative, serious design appropriate for an official institutional site (Chamber of Commerce), not generic/template-like layouts. Confidence: 0.9
+- Content must be professionally formatted and styled — rejects raw HTML dumps or unstyled text being placed on the page. Confidence: 0.9
+- Expects well-chosen color palettes and deliberate visual hierarchy — not default or simplistic choices. Confidence: 0.85
+- Works on Windows 11 environment. Confidence: 0.9
+- Uses PHP with Composer for web development. Confidence: 0.9
+- Uses Docker Compose for containerized development environment (e.g., app + PostgreSQL containers). Confidence: 0.85
+- Uses Git for version control; expects code to be committed and pushed. Confidence: 0.85
+- Integrates Google Sheets as a lightweight data store (e.g., for leads from forms). Confidence: 0.8
+- Uses Bitrix24 CRM with webhooks for lead management. Confidence: 0.8
+- Working on an institutional/business website for Polska Izba Przedsiębiorczości Lokalnych (Polish Chamber of Local Entrepreneurship) — expects the tone and design to reflect organizational authority and seriousness. Confidence: 0.9
+- Needs legal pages (regulations, privacy policy) presented as professional, well-formatted standalone pages — not afterthoughts. Confidence: 0.85
+- Expects payment integration readiness (e.g., Przelewy24/PayPro SA) — values completeness. Confidence: 0.75
