@@ -3,10 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Lead extends Model
 {
     protected $fillable = [
+        'user_id',
+        'assigned_to',
         'name',
         'surname',
         'company',
@@ -16,7 +20,10 @@ class Lead extends Model
         'wojewodztwo',
         'email',
         'phone',
+        'about',
         'status',
+        'source',
+        'stage',
         'bitrix_contact_id',
         'verified_at',
     ];
@@ -31,5 +38,20 @@ class Lead extends Model
     public function isAccepted(): bool
     {
         return $this->status === 'zaakceptowane';
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function assignee(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(LeadComment::class)->orderBy('created_at');
     }
 }

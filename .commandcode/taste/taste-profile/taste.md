@@ -21,3 +21,12 @@
 - Expects pagination in data tables that could grow large — does not want unbounded lists. Confidence: 0.8
 - Prefers progressive disclosure in UI — shows summary counts with expandable "show more" details (e.g., "Pokaż/Ukryj" toggle) rather than hiding related information or dumping everything at once. Confidence: 0.75
 - Wants comprehensive contextual information in status checks — even when a primary check returns a clear answer (e.g., gmina is free), wants to see related secondary data (e.g., pending/rejected leads) rather than just a simple binary status. Confidence: 0.75
+- Values data provenance and audit trails in business admin systems — wants to track and display how each record was created (e.g., form vs. manual entry) and by whom (e.g., salesperson name). Confidence: 0.8
+- Expects role-based access control with distinct roles (e.g., Administrator, Handlowiec, Główny Handlowiec) when multiple user types interact with the admin panel — not a single all-or-nothing access level. Confidence: 0.8
+- Bundles many feature requests into a single message — sends one large, comma-separated paragraph describing all desired changes at once rather than breaking into separate messages. Confidence: 0.85
+- Prefers split-panel detail views in admin UIs — e.g., editable data on the left, related activity/comments on the right. Confidence: 0.75
+- Expects clickable table rows that navigate to a detail view — not separate "view" buttons. Confidence: 0.75
+- Defines custom business workflow stages (e.g., I/II/III próba kontaktu, Zdecydował się) rather than accepting generic status systems — values domain-specific pipeline tracking. Confidence: 0.8
+- Expects "show only my items" filter option in admin lists when items are assignable (e.g., checkbox for "Moje leady") — values personal workload visibility. Confidence: 0.75
+- Expects conditional UI elements based on role — e.g., assignment dropdowns only visible to users with the appropriate role (admin/główny handlowiec), not hidden behind separate pages. Confidence: 0.75
+- When adding new features, expects existing functionality to be preserved — additions should go alongside, never replacing what already works. Strongly frustrated by any removal or regression of existing UI/behavior when implementing new features. Confidence: 0.9

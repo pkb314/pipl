@@ -415,6 +415,10 @@
                                     <label class="mb-2 block text-sm font-bold text-pipl-graphite">E-mail</label>
                                     <input type="email" name="email" value="{{ old('email') }}" class="field w-full rounded border @error('email') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100" placeholder="adres@firma.pl" required>
                                 </div>
+                                <div class="col-span-2">
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Napisz coś o sobie</label>
+                                    <textarea name="about" rows="4" class="field w-full rounded border @error('about') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100 resize-none" placeholder="Opisz swoją działalność, doświadczenie, oczekiwania wobec Izby...">{{ old('about') }}</textarea>
+                                </div>
                                 <div class="col-span-2 border border-pipl-line bg-pipl-paper p-4 text-sm leading-6 text-pipl-graphite">
                                     Dane wykorzystamy wyłącznie do obsługi zgłoszenia i kontaktu w sprawie członkostwa. Szczegóły opisuje <a href="{{ route('legal.privacy') }}" class="font-bold text-pipl-red underline">polityka prywatności</a>, a zasady członkostwa określa <a href="{{ route('legal.terms') }}" class="font-bold text-pipl-red underline">regulamin</a>.
                                 </div>
@@ -527,12 +531,23 @@
             preload: false,
             render: {
                 option: function(data, escape) {
+                    if (data.taken) {
+                        return '<div class="py-2 px-3 border-l-4 border-amber-400 bg-amber-50">' +
+                            '<span class="font-bold">' + escape(data.value) + '</span>' +
+                            ' <span class="text-pipl-steel text-sm">(pow. ' + escape(data.powiat) + ', woj. ' + escape(data.wojewodztwo) + ')</span>' +
+                            '<div class="mt-1 text-xs font-bold text-amber-700">Zajęta — możesz zapisać się na listę rezerwową</div>' +
+                            '</div>';
+                    }
                     return '<div class="py-2 px-3">' +
                         '<span class="font-bold">' + escape(data.value) + '</span>' +
                         ' <span class="text-pipl-steel text-sm">(pow. ' + escape(data.powiat) + ', woj. ' + escape(data.wojewodztwo) + ')</span>' +
+                        '<div class="mt-1 text-xs font-bold text-green-700">Wolna</div>' +
                         '</div>';
                 },
                 item: function(data, escape) {
+                    if (data.taken) {
+                        return '<div>' + escape(data.value) + ' <span class="text-xs text-amber-600 font-bold">(lista rezerwowa)</span></div>';
+                    }
                     return '<div>' + escape(data.value) + '</div>';
                 }
             },

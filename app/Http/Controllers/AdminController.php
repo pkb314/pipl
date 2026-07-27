@@ -3,41 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lead;
+use App\Models\LeadComment;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class AdminController extends Controller
 {
-    public function loginForm()
-    {
-        return view('admin.login');
-    }
-
-    public function login(Request $request)
-    {
-        $request->validate([
-            'password' => 'required',
-        ]);
-
-        if ($request->input('password') !== 'Pipl0727') {
-            return back()->withErrors(['password' => 'Nieprawidłowe hasło.']);
-        }
-
-        session(['admin_verified' => true]);
-
-        return redirect()->route('admin.leads');
-    }
-
-    public function logout()
-    {
-        session()->forget('admin_verified');
-
-        return redirect()->route('admin.login');
-    }
+    public const STAGES = [
+        'I próba kontaktu',
+        'II próba kontaktu',
+        'III próba kontaktu',
+        'Zdecydował się',
+    ];
 
     public function index(Request $request)
     {
-        $query = Lead::query();
+        $query = Lead::with(['user', 'assignee']);
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
@@ -66,6 +50,18 @@ class AdminController extends Controller
             $query->where('status', $status);
         }
 
+        if ($source = $request->input('source')) {
+            $query->where('source', $source);
+        }
+
+        if ($stage = $request->input('stage')) {
+            $query->where('stage', $stage);
+        }
+
+        if ($request->input('mine')) {
+            $query->where('assigned_to', auth()->id());
+        }
+
         $leads = $query->orderByDesc('created_at')->paginate(15)->withQueryString();
 
         $wojewodztwa = DB::table('wojewodztwa')->orderBy('nazwa')->pluck('nazwa');
@@ -75,18 +71,57 @@ class AdminController extends Controller
         return view('admin.leads', compact('leads', 'wojewodztwa', 'powiaty', 'gminy'));
     }
 
-    public function accept(Lead $lead)
+    public function show(Lead $lead)
     {
-        $lead->update(['status' => 'zaakceptowane']);
+        $lead->load(['user', 'assignee', 'comments.user']);
+        $handlowcy = User::whereIn('role', ['handlowiec', 'glowny_handlowiec'])->orderBy('name')->get();
 
-        return back()->with('success', "Zgłoszenie {$lead->name} {$lead->surname} zostało zaakceptowane.");
+        return view('admin.leads.show', compact('lead', 'handlowcy'));
     }
 
-    public function reject(Lead $lead)
+    public function updateLead(Request $request, Lead $lead)
     {
-        $lead->update(['status' => 'odrzucone']);
+        $data = $request->validate([
+            'name' => 'required|string|max:50',
+            'surname' => 'required|string|max:50',
+            'company' => 'required|string|max:100',
+            'adres' => 'required|string|max:255',
+            'gmina' => 'required|string|max:100',
+            'about' => 'nullable|string|max:2000',
+            'email' => 'required|email',
+            'phone' => 'required|string|min:9',
+            'status' => 'required|in:zgłoszone,zaakceptowane,odrzucone',
+            'stage' => 'nullable|in:' . implode(',', self::STAGES),
+            'assigned_to' => 'nullable|exists:users,id',
+        ]);
 
-        return back()->with('success', "Zgłoszenie {$lead->name} {$lead->surname} zostało odrzucone.");
+        $gminaRow = DB::table('gminy')
+            ->join('powiaty', 'powiaty.id', '=', 'gminy.powiat_id')
+            ->join('wojewodztwa', 'wojewodztwa.id', '=', 'powiaty.wojewodztwo_id')
+            ->where('gminy.nazwa', $data['gmina'])
+            ->select('powiaty.nazwa as powiat', 'wojewodztwa.nazwa as wojewodztwo')
+            ->first();
+
+        $data['powiat'] = $gminaRow?->powiat;
+        $data['wojewodztwo'] = $gminaRow?->wojewodztwo;
+
+        $lead->update($data);
+
+        return back()->with('success', 'Zgłoszenie zostało zaktualizowane.');
+    }
+
+    public function addComment(Request $request, Lead $lead)
+    {
+        $request->validate([
+            'body' => 'required|string|max:2000',
+        ]);
+
+        $lead->comments()->create([
+            'user_id' => auth()->id(),
+            'body' => $request->input('body'),
+        ]);
+
+        return back()->with('success', 'Komentarz został dodany.');
     }
 
     public function updateStatus(Request $request, Lead $lead)
@@ -98,6 +133,17 @@ class AdminController extends Controller
         $lead->update(['status' => $request->input('status')]);
 
         return back()->with('success', "Status zgłoszenia {$lead->name} {$lead->surname} został zmieniony.");
+    }
+
+    public function assign(Request $request, Lead $lead)
+    {
+        $request->validate([
+            'assigned_to' => 'nullable|exists:users,id',
+        ]);
+
+        $lead->update(['assigned_to' => $request->input('assigned_to')]);
+
+        return back()->with('success', 'Przypisanie zostało zaktualizowane.');
     }
 
     public function checkGmina(Request $request)
@@ -140,5 +186,76 @@ class AdminController extends Controller
             'pending_count' => $pending->count(),
             'pending_leads' => $pending->values(),
         ]);
+    }
+
+    public function userList()
+    {
+        $users = User::orderByDesc('created_at')->get();
+
+        return view('admin.users.index', compact('users'));
+    }
+
+    public function createUser()
+    {
+        return view('admin.users.create');
+    }
+
+    public function storeUser(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => ['required', 'confirmed', Password::min(6)],
+            'role' => 'required|in:admin,handlowiec,glowny_handlowiec',
+        ]);
+
+        User::create([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
+            'role' => $request->input('role'),
+        ]);
+
+        return redirect()->route('admin.users')->with('success', 'Konto zostało utworzone.');
+    }
+
+    public function editUser(User $user)
+    {
+        return view('admin.users.edit', compact('user'));
+    }
+
+    public function updateUser(Request $request, User $user)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => ['nullable', 'confirmed', Password::min(6)],
+            'role' => 'required|in:admin,handlowiec,glowny_handlowiec',
+        ]);
+
+        $data = [
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'role' => $request->input('role'),
+        ];
+
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->input('password'));
+        }
+
+        $user->update($data);
+
+        return redirect()->route('admin.users')->with('success', 'Konto zostało zaktualizowane.');
+    }
+
+    public function deleteUser(User $user)
+    {
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'Nie możesz usunąć własnego konta.');
+        }
+
+        $user->delete();
+
+        return back()->with('success', 'Konto zostało usunięte.');
     }
 }

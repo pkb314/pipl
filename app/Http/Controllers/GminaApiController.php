@@ -29,13 +29,27 @@ class GminaApiController extends Controller
             )
             ->orderBy('gminy.nazwa')
             ->limit(30)
-            ->get()
-            ->map(fn($row) => [
+            ->get();
+
+        $takenGminy = DB::table('leads')
+            ->where('status', 'zaakceptowane')
+            ->pluck('gmina')
+            ->map(fn($g) => mb_strtolower($g))
+            ->toArray();
+
+        $results = $results->map(function ($row) use ($takenGminy) {
+            $isTaken = in_array(mb_strtolower($row->value), $takenGminy);
+
+            return [
                 'value' => $row->value,
-                'label' => "{$row->value} (pow. {$row->powiat}, woj. {$row->wojewodztwo})",
+                'label' => $isTaken
+                    ? "{$row->value} (pow. {$row->powiat}, woj. {$row->wojewodztwo}) — ZAJĘTA (lista rezerwowa)"
+                    : "{$row->value} (pow. {$row->powiat}, woj. {$row->wojewodztwo})",
                 'powiat' => $row->powiat,
                 'wojewodztwo' => $row->wojewodztwo,
-            ]);
+                'taken' => $isTaken,
+            ];
+        });
 
         return response()->json($results);
     }
