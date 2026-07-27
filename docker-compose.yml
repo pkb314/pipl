@@ -33,7 +33,7 @@ services:
       - POSTGRES_USER=${DB_USERNAME:-pipl_user}
       - POSTGRES_PASSWORD=${DB_PASSWORD:-pipl_secret_2026}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:

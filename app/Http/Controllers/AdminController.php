@@ -124,6 +124,21 @@ class AdminController extends Controller
             ]);
         }
 
-        return response()->json(['status' => 'free']);
+        $pending = Lead::where('gmina', $gmina)
+            ->whereIn('status', ['zgłoszone', 'odrzucone'])
+            ->get()
+            ->map(fn($l) => [
+                'name' => $l->name . ' ' . $l->surname,
+                'company' => $l->company,
+                'email' => $l->email,
+                'status' => $l->status,
+                'created_at' => $l->created_at->format('Y-m-d'),
+            ]);
+
+        return response()->json([
+            'status' => 'free',
+            'pending_count' => $pending->count(),
+            'pending_leads' => $pending->values(),
+        ]);
     }
 }

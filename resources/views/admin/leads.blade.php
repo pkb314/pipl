@@ -309,9 +309,35 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(r => r.json())
             .then(data => {
                 if (data.status === 'free') {
-                    resultDiv.innerHTML = '<div class="rounded border border-green-200 bg-green-50 p-4">' +
+                    let html = '<div class="rounded border border-green-200 bg-green-50 p-4">' +
                         '<p class="text-sm font-bold text-green-800">Gmina ' + gmina + ' jest wolna.</p>' +
-                        '<p class="mt-1 text-xs text-green-700">Brak zaakceptowanych zgłoszeń w tej gminie.</p></div>';
+                        '<p class="mt-1 text-xs text-green-700">Brak zaakceptowanych zgłoszeń w tej gminie.</p>';
+
+                    if (data.pending_count > 0) {
+                        html += '<div class="mt-3 border-t border-green-200 pt-3">' +
+                            '<p class="text-xs font-bold text-amber-700">Niezaakceptowane zgłoszenia: ' + data.pending_count + '</p>' +
+                            '<button type="button" onclick="togglePendingList(this)" class="mt-1 text-xs font-bold text-pipl-red hover:underline">Pokaż</button>' +
+                            '<div class="pending-list mt-2 hidden">';
+
+                        data.pending_leads.forEach(function(lead) {
+                            const statusBadge = lead.status === 'zgłoszone'
+                                ? '<span class="inline-block rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-700">Zgłoszone</span>'
+                                : '<span class="inline-block rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700">Odrzucone</span>';
+
+                            html += '<div class="mb-2 rounded bg-white border border-pipl-line p-3 text-xs">' +
+                                '<div class="flex items-center justify-between">' +
+                                '<span class="font-bold text-pipl-ink">' + lead.name + '</span>' + statusBadge +
+                                '</div>' +
+                                '<p class="mt-1 text-pipl-graphite">' + lead.company + '</p>' +
+                                '<p class="text-pipl-steel">' + lead.email + ' — ' + lead.created_at + '</p>' +
+                                '</div>';
+                        });
+
+                        html += '</div></div>';
+                    }
+
+                    html += '</div>';
+                    resultDiv.innerHTML = html;
                 } else if (data.status === 'taken') {
                     resultDiv.innerHTML = '<div class="rounded border border-amber-200 bg-amber-50 p-4">' +
                         '<p class="text-sm font-bold text-amber-800">Gmina ' + gmina + ' jest zajęta.</p>' +
@@ -329,6 +355,14 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     });
 });
+</script>
+<script>
+function togglePendingList(btn) {
+    const list = btn.parentElement.querySelector('.pending-list');
+    const isHidden = list.classList.contains('hidden');
+    list.classList.toggle('hidden');
+    btn.textContent = isHidden ? 'Ukryj' : 'Pokaż';
+}
 </script>
 <style>
     .ts-wrapper {
