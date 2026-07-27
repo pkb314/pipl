@@ -16,3 +16,6 @@
 - Working on an institutional/business website for Polska Izba Przedsiębiorczości Lokalnych (Polish Chamber of Local Entrepreneurship) — expects the tone and design to reflect organizational authority and seriousness. Confidence: 0.9
 - Needs legal pages (regulations, privacy policy) presented as professional, well-formatted standalone pages — not afterthoughts. Confidence: 0.85
 - Expects payment integration readiness (e.g., Przelewy24/PayPro SA) — values completeness. Confidence: 0.75
+- Expects loading indicators (spinners, button state changes) during any async operation — strongly dislikes UI appearing frozen or unresponsive. Confidence: 0.9
+- Prefers inline editable controls (e.g., auto-submitting dropdowns) in data tables over separate action buttons for simple state changes — values compact, immediate UX. Confidence: 0.8
+- Expects pagination in data tables that could grow large — does not want unbounded lists. Confidence: 0.8

@@ -62,12 +62,68 @@ class AdminController extends Controller
             $query->where('gmina', $gmina);
         }
 
-        $leads = $query->orderByDesc('created_at')->get();
+        if ($status = $request->input('status')) {
+            $query->where('status', $status);
+        }
+
+        $leads = $query->orderByDesc('created_at')->paginate(15)->withQueryString();
 
         $wojewodztwa = DB::table('wojewodztwa')->orderBy('nazwa')->pluck('nazwa');
         $powiaty = DB::table('powiaty')->orderBy('nazwa')->pluck('nazwa');
         $gminy = DB::table('gminy')->orderBy('nazwa')->pluck('nazwa');
 
         return view('admin.leads', compact('leads', 'wojewodztwa', 'powiaty', 'gminy'));
+    }
+
+    public function accept(Lead $lead)
+    {
+        $lead->update(['status' => 'zaakceptowane']);
+
+        return back()->with('success', "Zgłoszenie {$lead->name} {$lead->surname} zostało zaakceptowane.");
+    }
+
+    public function reject(Lead $lead)
+    {
+        $lead->update(['status' => 'odrzucone']);
+
+        return back()->with('success', "Zgłoszenie {$lead->name} {$lead->surname} zostało odrzucone.");
+    }
+
+    public function updateStatus(Request $request, Lead $lead)
+    {
+        $request->validate([
+            'status' => 'required|in:zgłoszone,zaakceptowane,odrzucone',
+        ]);
+
+        $lead->update(['status' => $request->input('status')]);
+
+        return back()->with('success', "Status zgłoszenia {$lead->name} {$lead->surname} został zmieniony.");
+    }
+
+    public function checkGmina(Request $request)
+    {
+        $gmina = $request->input('gmina', '');
+
+        if (!$gmina) {
+            return response()->json(['status' => 'empty']);
+        }
+
+        $accepted = Lead::where('gmina', $gmina)
+            ->where('status', 'zaakceptowane')
+            ->first();
+
+        if ($accepted) {
+            return response()->json([
+                'status' => 'taken',
+                'lead' => [
+                    'name' => $accepted->name . ' ' . $accepted->surname,
+                    'company' => $accepted->company,
+                    'email' => $accepted->email,
+                    'created_at' => $accepted->created_at->format('Y-m-d'),
+                ],
+            ]);
+        }
+
+        return response()->json(['status' => 'free']);
     }
 }
