@@ -30,3 +30,5 @@
 - Expects "show only my items" filter option in admin lists when items are assignable (e.g., checkbox for "Moje leady") — values personal workload visibility. Confidence: 0.75
 - Expects conditional UI elements based on role — e.g., assignment dropdowns only visible to users with the appropriate role (admin/główny handlowiec), not hidden behind separate pages. Confidence: 0.75
 - When adding new features, expects existing functionality to be preserved — additions should go alongside, never replacing what already works. Strongly frustrated by any removal or regression of existing UI/behavior when implementing new features. Confidence: 0.9
+- Prefers Laravel Artisan console commands for data synchronization and ETL tasks (e.g., pulling data from external APIs into the database) rather than one-off scripts or manual processes. Confidence: 0.8
+- When pointing to existing service methods, expects them to be reused directly — does not want reimplemented or parallel logic for the same external integration. Confidence: 0.75
