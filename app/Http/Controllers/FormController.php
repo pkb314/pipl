@@ -23,6 +23,7 @@ class FormController extends Controller
             'company' => 'required|string|max:100',
             'adres' => 'required|string|max:255',
             'gmina' => 'required|string|max:100',
+            'about' => 'nullable|string|max:2000',
             'email' => 'required|email',
             'phone' => 'required|string|min:9',
         ], [

@@ -15,7 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'platnosci/przelewy24/status',
         ]);
-        $middleware->alias(['admin' => \App\Http\Middleware\AdminPassword::class]);
+        $middleware->alias([
+            'admin' => \App\Http\Middleware\RoleMiddleware::class,
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

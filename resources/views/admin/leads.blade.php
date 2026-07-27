@@ -8,12 +8,22 @@
             <h1 class="mt-4 text-3xl font-black">Zgłoszenia</h1>
             <p class="mt-2 text-sm text-pipl-steel">{{ $leads->total() }} zgłoszeń łącznie</p>
         </div>
-        <form method="POST" action="{{ route('admin.logout') }}">
-            @csrf
-            <button type="submit" class="rounded border border-pipl-line bg-white px-4 py-2 text-sm font-bold text-pipl-graphite transition hover:bg-pipl-paper hover:text-pipl-red">
-                Wyloguj
-            </button>
-        </form>
+        <div class="flex gap-3">
+            @if (auth()->user()->isAdmin())
+                <a href="{{ route('admin.users') }}" class="rounded border border-pipl-line bg-white px-4 py-2 text-sm font-bold text-pipl-graphite transition hover:bg-pipl-paper">
+                    Użytkownicy
+                </a>
+            @endif
+            <a href="{{ route('admin.leads.create') }}" class="rounded bg-pipl-red px-4 py-2 text-sm font-bold text-white transition hover:bg-pipl-redDark">
+                Dodaj zgłoszenie
+            </a>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="rounded border border-pipl-line bg-white px-4 py-2 text-sm font-bold text-pipl-graphite transition hover:bg-pipl-paper hover:text-pipl-red">
+                    Wyloguj ({{ auth()->user()->name }})
+                </button>
+            </form>
+        </div>
     </div>
 
     @if (session('success'))
@@ -50,7 +60,7 @@
             >
         </div>
 
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-5">
             <div>
                 <label class="mb-1 block text-xs font-bold uppercase tracking-wide text-pipl-steel">Województwo</label>
                 <select id="filter-wojewodztwo" name="wojewodztwo">
@@ -87,13 +97,34 @@
                     <option value="odrzucone" @selected(request('status') === 'odrzucone')>Odrzucone</option>
                 </select>
             </div>
+            <div>
+                <label class="mb-1 block text-xs font-bold uppercase tracking-wide text-pipl-steel">Źródło</label>
+                <select id="filter-source" name="source">
+                    <option value="">Wszystkie</option>
+                    <option value="formularz" @selected(request('source') === 'formularz')>Formularz</option>
+                    <option value="reczne" @selected(request('source') === 'reczne')>Ręczne</option>
+                </select>
+            </div>
+            <div>
+                <label class="mb-1 block text-xs font-bold uppercase tracking-wide text-pipl-steel">Etap</label>
+                <select id="filter-stage" name="stage">
+                    <option value="">Wszystkie</option>
+                    @foreach (\App\Http\Controllers\AdminController::STAGES as $s)
+                        <option value="{{ $s }}" @selected(request('stage') === $s)>{{ $s }}</option>
+                    @endforeach
+                </select>
+            </div>
         </div>
 
-        <div class="flex gap-3">
+        <div class="flex flex-wrap gap-3">
             <button type="submit" class="rounded bg-pipl-red px-6 py-3 text-sm font-bold text-white transition hover:bg-pipl-redDark">
                 Filtruj
             </button>
-            @if (request()->hasAny(['search', 'wojewodztwo', 'powiat', 'gmina', 'status']))
+            <label class="flex cursor-pointer items-center gap-2 rounded border border-pipl-line bg-white px-4 py-3 text-sm font-bold text-pipl-graphite transition hover:bg-pipl-paper">
+                <input type="checkbox" name="mine" value="1" @checked(request('mine')) class="rounded border-pipl-line text-pipl-red focus:ring-pipl-red">
+                Moje leady
+            </label>
+            @if (request()->hasAny(['search', 'wojewodztwo', 'powiat', 'gmina', 'status', 'source', 'stage', 'mine']))
                 <a href="{{ route('admin.leads') }}" class="rounded border border-pipl-line bg-white px-6 py-3 text-sm font-bold text-pipl-graphite transition hover:bg-pipl-paper">
                     Wyczyść filtry
                 </a>
@@ -109,25 +140,31 @@
                     <th class="px-4 py-3">Imię i nazwisko</th>
                     <th class="px-4 py-3">Firma</th>
                     <th class="px-4 py-3">Gmina</th>
-                    <th class="px-4 py-3">Powiat</th>
                     <th class="px-4 py-3">Województwo</th>
-                    <th class="px-4 py-3">E-mail</th>
-                    <th class="px-4 py-3">Telefon</th>
+                    <th class="px-4 py-3">Źródło</th>
+                    <th class="px-4 py-3">Etap</th>
+                    <th class="px-4 py-3">Przypisane</th>
                     <th class="px-4 py-3">Status</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-pipl-line">
                 @forelse ($leads as $lead)
-                    <tr class="transition hover:bg-pipl-porcelain">
+                    <tr class="cursor-pointer transition hover:bg-pipl-porcelain" onclick="window.location='{{ route('admin.leads.show', $lead) }}'">
                         <td class="whitespace-nowrap px-4 py-3 text-pipl-steel">{{ $lead->created_at->format('Y-m-d H:i') }}</td>
                         <td class="whitespace-nowrap px-4 py-3 font-bold">{{ $lead->name }} {{ $lead->surname }}</td>
                         <td class="px-4 py-3 text-pipl-graphite">{{ $lead->company }}</td>
                         <td class="px-4 py-3 text-pipl-graphite">{{ $lead->gmina }}</td>
-                        <td class="px-4 py-3 text-pipl-graphite">{{ $lead->powiat ?? '—' }}</td>
                         <td class="px-4 py-3 text-pipl-graphite">{{ $lead->wojewodztwo ?? '—' }}</td>
-                        <td class="whitespace-nowrap px-4 py-3 text-pipl-graphite">{{ $lead->email }}</td>
-                        <td class="whitespace-nowrap px-4 py-3 text-pipl-graphite">{{ $lead->phone }}</td>
                         <td class="whitespace-nowrap px-4 py-3">
+                            @if ($lead->source === 'reczne')
+                                <span class="inline-block rounded-full bg-blue-50 px-2 py-1 text-[10px] font-bold text-blue-700">Ręczne</span>
+                            @else
+                                <span class="inline-block rounded-full bg-pipl-paper px-2 py-1 text-[10px] font-bold text-pipl-graphite">Formularz</span>
+                            @endif
+                        </td>
+                        <td class="whitespace-nowrap px-4 py-3 text-xs text-pipl-graphite">{{ $lead->stage ?? '—' }}</td>
+                        <td class="whitespace-nowrap px-4 py-3 text-xs text-pipl-graphite">{{ $lead->assignee?->name ?? '—' }}</td>
+                        <td class="whitespace-nowrap px-4 py-3" onclick="event.stopPropagation()">
                             <form method="POST" action="{{ route('admin.leads.update-status', $lead) }}" class="inline-flex items-center gap-2">
                                 @csrf
                                 <select name="status" onchange="this.form.submit()" class="rounded border border-pipl-line bg-white px-2 py-1 text-xs font-bold focus:border-pipl-red focus:outline-none focus:ring-2 focus:ring-red-100 @if($lead->status === 'zaakceptowane') text-green-800 bg-green-50 border-green-200 @elseif($lead->status === 'odrzucone') text-red-800 bg-red-50 border-red-200 @else text-amber-800 bg-amber-50 border-amber-200 @endif">
@@ -189,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     function reinitFilterTomSelects() {
-        ['filter-wojewodztwo', 'filter-powiat', 'filter-gmina', 'filter-status'].forEach(id => {
+        ['filter-wojewodztwo', 'filter-powiat', 'filter-gmina', 'filter-status', 'filter-source', 'filter-stage'].forEach(id => {
             const el = document.getElementById(id);
             if (el && el.tomselect) el.tomselect.destroy();
         });
@@ -253,6 +290,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const filterStatus = document.getElementById('filter-status');
         if (filterStatus.tomselect) filterStatus.tomselect.destroy();
         new TomSelect(filterStatus, tsConfig);
+
+        const filterSource = document.getElementById('filter-source');
+        if (filterSource.tomselect) filterSource.tomselect.destroy();
+        new TomSelect(filterSource, tsConfig);
+
+        const filterStage = document.getElementById('filter-stage');
+        if (filterStage.tomselect) filterStage.tomselect.destroy();
+        new TomSelect(filterStage, tsConfig);
     }
 
     reinitFilterTomSelects();

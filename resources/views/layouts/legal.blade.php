@@ -54,6 +54,11 @@
         <div class="flex gap-4 text-sm font-bold text-pipl-graphite">
             <a href="{{ route('legal.terms') }}" class="hover:text-pipl-red">Regulamin</a>
             <a href="{{ route('legal.privacy') }}" class="hover:text-pipl-red">Prywatność</a>
+            @auth
+                <a href="{{ route('admin.leads') }}" class="hover:text-pipl-red">Panel</a>
+            @else
+                <a href="{{ route('login') }}" class="hover:text-pipl-red">Logowanie</a>
+            @endauth
         </div>
     </div>
 </nav>
