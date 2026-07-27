@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Mail\OtpMail;
+use App\Models\Lead;
 use App\Services\Bitrix24Service;
 use App\Services\GoogleSheetsLeadService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -48,10 +50,26 @@ class FormController extends Controller
         }
 
         $validated = $validator->validated();
+
+        $gminaRow = DB::table('gminy')
+            ->join('powiaty', 'powiaty.id', '=', 'gminy.powiat_id')
+            ->join('wojewodztwa', 'wojewodztwa.id', '=', 'powiaty.wojewodztwo_id')
+            ->where('gminy.nazwa', $validated['gmina'])
+            ->select('powiaty.nazwa as powiat', 'wojewodztwa.nazwa as wojewodztwo')
+            ->first();
+
+        $lead = Lead::create([
+            ...$validated,
+            'powiat' => $gminaRow?->powiat,
+            'wojewodztwo' => $gminaRow?->wojewodztwo,
+            'status' => 'pending',
+        ]);
+
         $token = Str::random(40);
 
         Session::put('lead_data', $validated);
         Session::put('verification_token', $token);
+        Session::put('lead_id', $lead->id);
 
         $url = route('verification.verify', ['token' => $token]);
 
@@ -70,6 +88,7 @@ class FormController extends Controller
     {
         $sessionToken = Session::get('verification_token');
         $leadData = Session::get('lead_data');
+        $leadId = Session::get('lead_id');
 
         if (!$sessionToken || $token !== $sessionToken || !$leadData) {
             return redirect('/')
@@ -96,10 +115,22 @@ class FormController extends Controller
 
             app(GoogleSheetsLeadService::class)->appendLead($leadData);
 
-            Session::forget(['lead_data', 'verification_token']);
+            if ($leadId) {
+                Lead::where('id', $leadId)->update([
+                    'status' => 'verified',
+                    'bitrix_contact_id' => $contactId,
+                    'verified_at' => now(),
+                ]);
+            }
+
+            Session::forget(['lead_data', 'verification_token', 'lead_id']);
 
             return redirect('/')->with('success', 'Weryfikacja pomyślna!')->withFragment('formularz');
         } catch (\Exception $e) {
+            if ($leadId) {
+                Lead::where('id', $leadId)->update(['status' => 'failed']);
+            }
+
             return redirect('/')
                 ->with('error', 'Błąd przekazania zgłoszenia. Spróbuj później.')
                 ->withFragment('formularz');
