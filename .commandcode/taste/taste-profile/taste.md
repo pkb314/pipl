@@ -19,3 +19,5 @@
 - Expects loading indicators (spinners, button state changes) during any async operation — strongly dislikes UI appearing frozen or unresponsive. Confidence: 0.9
 - Prefers inline editable controls (e.g., auto-submitting dropdowns) in data tables over separate action buttons for simple state changes — values compact, immediate UX. Confidence: 0.8
 - Expects pagination in data tables that could grow large — does not want unbounded lists. Confidence: 0.8
+- Prefers progressive disclosure in UI — shows summary counts with expandable "show more" details (e.g., "Pokaż/Ukryj" toggle) rather than hiding related information or dumping everything at once. Confidence: 0.75
+- Wants comprehensive contextual information in status checks — even when a primary check returns a clear answer (e.g., gmina is free), wants to see related secondary data (e.g., pending/rejected leads) rather than just a simple binary status. Confidence: 0.75
