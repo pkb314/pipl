@@ -6,7 +6,7 @@
         <div>
             <p class="rule-label text-xs font-black uppercase text-pipl-red">Panel administracyjny</p>
             <h1 class="mt-4 text-3xl font-black">Zgłoszenia</h1>
-            <p class="mt-2 text-sm text-pipl-steel">{{ $leads->count() }} zgłoszeń łącznie</p>
+            <p class="mt-2 text-sm text-pipl-steel">{{ $leads->total() }} zgłoszeń łącznie</p>
         </div>
         <form method="POST" action="{{ route('admin.logout') }}">
             @csrf
@@ -14,6 +14,29 @@
                 Wyloguj
             </button>
         </form>
+    </div>
+
+    @if (session('success'))
+        <div class="mt-4 rounded border border-green-200 bg-green-50 p-4 text-sm text-green-800">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <div class="mt-8 rounded border border-pipl-line bg-white p-6">
+        <p class="text-xs font-black uppercase tracking-wide text-pipl-red">Sprawdź dostępność gminy</p>
+        <p class="mt-1 text-sm text-pipl-steel">Wybierz gminę, aby sprawdzić czy jest już zajęta przez zaakceptowane zgłoszenie.</p>
+        <div class="mt-4 flex gap-3">
+            <div class="flex-1">
+                <select id="check-gmina-select">
+                    <option value="">Wybierz gminę...</option>
+                </select>
+                <input type="hidden" id="check-gmina-hidden">
+            </div>
+            <button type="button" id="check-gmina-btn" class="rounded bg-pipl-red px-6 py-2 text-sm font-bold text-white transition hover:bg-pipl-redDark">
+                Sprawdź
+            </button>
+        </div>
+        <div id="check-gmina-result" class="mt-4 hidden"></div>
     </div>
 
     <form method="GET" action="{{ route('admin.leads') }}" class="mt-8 space-y-4">
@@ -27,7 +50,7 @@
             >
         </div>
 
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
             <div>
                 <label class="mb-1 block text-xs font-bold uppercase tracking-wide text-pipl-steel">Województwo</label>
                 <select id="filter-wojewodztwo" name="wojewodztwo">
@@ -55,13 +78,22 @@
                     @endforeach
                 </select>
             </div>
+            <div>
+                <label class="mb-1 block text-xs font-bold uppercase tracking-wide text-pipl-steel">Status</label>
+                <select id="filter-status" name="status">
+                    <option value="">Wszystkie</option>
+                    <option value="zgłoszone" @selected(request('status') === 'zgłoszone')>Zgłoszone</option>
+                    <option value="zaakceptowane" @selected(request('status') === 'zaakceptowane')>Zaakceptowane</option>
+                    <option value="odrzucone" @selected(request('status') === 'odrzucone')>Odrzucone</option>
+                </select>
+            </div>
         </div>
 
         <div class="flex gap-3">
             <button type="submit" class="rounded bg-pipl-red px-6 py-3 text-sm font-bold text-white transition hover:bg-pipl-redDark">
                 Filtruj
             </button>
-            @if (request()->hasAny(['search', 'wojewodztwo', 'powiat', 'gmina']))
+            @if (request()->hasAny(['search', 'wojewodztwo', 'powiat', 'gmina', 'status']))
                 <a href="{{ route('admin.leads') }}" class="rounded border border-pipl-line bg-white px-6 py-3 text-sm font-bold text-pipl-graphite transition hover:bg-pipl-paper">
                     Wyczyść filtry
                 </a>
@@ -70,7 +102,7 @@
     </form>
 
     <div class="mt-8 overflow-x-auto">
-        <table class="w-full min-w-[900px] border border-pipl-line bg-white text-sm">
+        <table class="w-full min-w-[1000px] border border-pipl-line bg-white text-sm">
             <thead>
                 <tr class="border-b border-pipl-line bg-pipl-paper text-left text-xs font-black uppercase tracking-wide text-pipl-steel">
                     <th class="px-4 py-3">Data</th>
@@ -96,13 +128,14 @@
                         <td class="whitespace-nowrap px-4 py-3 text-pipl-graphite">{{ $lead->email }}</td>
                         <td class="whitespace-nowrap px-4 py-3 text-pipl-graphite">{{ $lead->phone }}</td>
                         <td class="whitespace-nowrap px-4 py-3">
-                            @if ($lead->status === 'verified')
-                                <span class="inline-block rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-green-800">Weryfikacja OK</span>
-                            @elseif ($lead->status === 'failed')
-                                <span class="inline-block rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-red-800">Błąd</span>
-                            @else
-                                <span class="inline-block rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800">Oczekuje</span>
-                            @endif
+                            <form method="POST" action="{{ route('admin.leads.update-status', $lead) }}" class="inline-flex items-center gap-2">
+                                @csrf
+                                <select name="status" onchange="this.form.submit()" class="rounded border border-pipl-line bg-white px-2 py-1 text-xs font-bold focus:border-pipl-red focus:outline-none focus:ring-2 focus:ring-red-100 @if($lead->status === 'zaakceptowane') text-green-800 bg-green-50 border-green-200 @elseif($lead->status === 'odrzucone') text-red-800 bg-red-50 border-red-200 @else text-amber-800 bg-amber-50 border-amber-200 @endif">
+                                    <option value="zgłoszone" @selected($lead->status === 'zgłoszone')>Zgłoszone</option>
+                                    <option value="zaakceptowane" @selected($lead->status === 'zaakceptowane')>Zaakceptowane</option>
+                                    <option value="odrzucone" @selected($lead->status === 'odrzucone')>Odrzucone</option>
+                                </select>
+                            </form>
                         </td>
                     </tr>
                 @empty
@@ -113,6 +146,35 @@
             </tbody>
         </table>
     </div>
+
+    @if ($leads->hasPages())
+        <div class="mt-6 flex items-center justify-between">
+            <p class="text-sm text-pipl-steel">
+                Wyświetlanie {{ $leads->firstItem() }}–{{ $leads->lastItem() }} z {{ $leads->total() }}
+            </p>
+            <div class="flex gap-1">
+                @if ($leads->onFirstPage())
+                    <span class="rounded border border-pipl-line bg-pipl-paper px-3 py-2 text-sm font-bold text-pipl-steel opacity-50">&laquo; Poprzednia</span>
+                @else
+                    <a href="{{ $leads->previousPageUrl() }}" class="rounded border border-pipl-line bg-white px-3 py-2 text-sm font-bold text-pipl-graphite transition hover:bg-pipl-paper">&laquo; Poprzednia</a>
+                @endif
+
+                @foreach ($leads->getUrlRange(max(1, $leads->currentPage() - 2), min($leads->lastPage(), $leads->currentPage() + 2)) as $page => $url)
+                    @if ($page == $leads->currentPage())
+                        <span class="rounded bg-pipl-red px-3 py-2 text-sm font-bold text-white">{{ $page }}</span>
+                    @else
+                        <a href="{{ $url }}" class="rounded border border-pipl-line bg-white px-3 py-2 text-sm font-bold text-pipl-graphite transition hover:bg-pipl-paper">{{ $page }}</a>
+                    @endif
+                @endforeach
+
+                @if ($leads->hasMorePages())
+                    <a href="{{ $leads->nextPageUrl() }}" class="rounded border border-pipl-line bg-white px-3 py-2 text-sm font-bold text-pipl-graphite transition hover:bg-pipl-paper">Następna &raquo;</a>
+                @else
+                    <span class="rounded border border-pipl-line bg-pipl-paper px-3 py-2 text-sm font-bold text-pipl-steel opacity-50">Następna &raquo;</span>
+                @endif
+            </div>
+        </div>
+    @endif
 </div>
 
 <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
@@ -126,90 +188,146 @@ document.addEventListener('DOMContentLoaded', function() {
         plugins: ['remove_button'],
     };
 
-    const filterWoj = new TomSelect('#filter-wojewodztwo', {
-        ...tsConfig,
-        onChange: function(value) {
-            const powiatSelect = document.getElementById('filter-powiat');
-            const gminaSelect = document.getElementById('filter-gmina');
+    function reinitFilterTomSelects() {
+        ['filter-wojewodztwo', 'filter-powiat', 'filter-gmina', 'filter-status'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el && el.tomselect) el.tomselect.destroy();
+        });
 
-            powiatSelect.innerHTML = '<option value="">Wszystkie</option>';
-            gminaSelect.innerHTML = '<option value="">Wszystkie</option>';
+        const filterWoj = new TomSelect('#filter-wojewodztwo', {
+            ...tsConfig,
+            onChange: function(value) {
+                const powiatSelect = document.getElementById('filter-powiat');
+                const gminaSelect = document.getElementById('filter-gmina');
+                powiatSelect.innerHTML = '<option value="">Wszystkie</option>';
+                gminaSelect.innerHTML = '<option value="">Wszystkie</option>';
+                if (powiatSelect.tomselect) powiatSelect.tomselect.clear();
+                if (gminaSelect.tomselect) gminaSelect.tomselect.clear();
 
-            if (filterPowiat.tomselect) filterPowiat.tomselect.clear();
-            if (filterGmina.tomselect) filterGmina.tomselect.clear();
-
-            if (!value) {
-                fetch('/api/powiaty').then(r => r.json()).then(data => {
-                    data.forEach(p => {
-                        const opt = document.createElement('option');
-                        opt.value = p; opt.text = p;
-                        powiatSelect.appendChild(opt);
+                if (!value) {
+                    fetch('/api/powiaty').then(r => r.json()).then(data => {
+                        data.forEach(p => { const o = document.createElement('option'); o.value = p; o.text = p; powiatSelect.appendChild(o); });
+                        if (powiatSelect.tomselect) powiatSelect.tomselect.destroy();
+                        new TomSelect(powiatSelect, {...tsConfig, onChange: filterWojCallbacks.powiat});
                     });
-                    filterPowiat.tomupdate && filterPowiat.tomupdate();
+                    return;
+                }
+                fetch('/api/powiaty?wojewodztwo=' + encodeURIComponent(value)).then(r => r.json()).then(data => {
+                    data.forEach(p => { const o = document.createElement('option'); o.value = p; o.text = p; powiatSelect.appendChild(o); });
+                    if (powiatSelect.tomselect) powiatSelect.tomselect.destroy();
+                    new TomSelect(powiatSelect, {...tsConfig, onChange: filterWojCallbacks.powiat});
                 });
-                return;
             }
+        });
 
-            fetch('/api/powiaty?wojewodztwo=' + encodeURIComponent(value))
-                .then(r => r.json()).then(data => {
-                    data.forEach(p => {
-                        const opt = document.createElement('option');
-                        opt.value = p; opt.text = p;
-                        powiatSelect.appendChild(opt);
+        const filterWojCallbacks = {
+            powiat: function(value) {
+                const gminaSelect = document.getElementById('filter-gmina');
+                gminaSelect.innerHTML = '<option value="">Wszystkie</option>';
+                if (gminaSelect.tomselect) gminaSelect.tomselect.clear();
+
+                if (!value) {
+                    fetch('/api/gminy-list').then(r => r.json()).then(data => {
+                        data.forEach(g => { const o = document.createElement('option'); o.value = g; o.text = g; gminaSelect.appendChild(o); });
+                        if (gminaSelect.tomselect) gminaSelect.tomselect.destroy();
+                        new TomSelect(gminaSelect, tsConfig);
                     });
-                    filterPowiat.tomupdate && filterPowiat.tomupdate();
+                    return;
+                }
+                fetch('/api/gminy-list?powiat=' + encodeURIComponent(value)).then(r => r.json()).then(data => {
+                    data.forEach(g => { const o = document.createElement('option'); o.value = g; o.text = g; gminaSelect.appendChild(o); });
+                    if (gminaSelect.tomselect) gminaSelect.tomselect.destroy();
+                    new TomSelect(gminaSelect, tsConfig);
                 });
+            }
+        };
+
+        const filterPowiat = document.getElementById('filter-powiat');
+        if (filterPowiat.tomselect) filterPowiat.tomselect.destroy();
+        new TomSelect(filterPowiat, {...tsConfig, onChange: filterWojCallbacks.powiat});
+
+        const filterGmina = document.getElementById('filter-gmina');
+        if (filterGmina.tomselect) filterGmina.tomselect.destroy();
+        new TomSelect(filterGmina, tsConfig);
+
+        const filterStatus = document.getElementById('filter-status');
+        if (filterStatus.tomselect) filterStatus.tomselect.destroy();
+        new TomSelect(filterStatus, tsConfig);
+    }
+
+    reinitFilterTomSelects();
+
+    // Gmina checker
+    const checkGminaSelect = new TomSelect('#check-gmina-select', {
+        valueField: 'value',
+        labelField: 'label',
+        searchField: ['value', 'label'],
+        create: false,
+        maxOptions: 30,
+        placeholder: 'Wybierz gminę...',
+        render: {
+            option: function(data, escape) {
+                return '<div class="py-2 px-3">' +
+                    '<span class="font-bold">' + escape(data.value) + '</span>' +
+                    ' <span class="text-pipl-steel text-sm">(pow. ' + escape(data.powiat) + ', woj. ' + escape(data.wojewodztwo) + ')</span>' +
+                    '</div>';
+            },
+            item: function(data, escape) {
+                return '<div>' + escape(data.value) + ' <span class="text-pipl-steel text-xs">(pow. ' + escape(data.powiat) + ', woj. ' + escape(data.wojewodztwo) + ')</span></div>';
+            }
+        },
+        load: function(query, callback) {
+            if (!query.length || query.length < 1) return callback();
+            fetch('/api/gminy?q=' + encodeURIComponent(query))
+                .then(r => r.json())
+                .then(callback)
+                .catch(() => callback());
+        },
+        onChange: function(value) {
+            document.getElementById('check-gmina-hidden').value = value;
+            document.getElementById('check-gmina-result').classList.add('hidden');
         }
     });
 
-    const filterPowiat = new TomSelect('#filter-powiat', {
-        ...tsConfig,
-        onChange: function(value) {
-            const gminaSelect = document.getElementById('filter-gmina');
-            gminaSelect.innerHTML = '<option value="">Wszystkie</option>';
+    document.getElementById('check-gmina-btn').addEventListener('click', function() {
+        const gmina = document.getElementById('check-gmina-hidden').value;
+        const resultDiv = document.getElementById('check-gmina-result');
+        const btn = this;
 
-            if (filterGmina.tomselect) filterGmina.tomselect.clear();
-
-            if (!value) {
-                fetch('/api/gminy-list').then(r => r.json()).then(data => {
-                    data.forEach(g => {
-                        const opt = document.createElement('option');
-                        opt.value = g; opt.text = g;
-                        gminaSelect.appendChild(opt);
-                    });
-                    filterGmina.tomupdate && filterGmina.tomupdate();
-                });
-                return;
-            }
-
-            fetch('/api/gminy-list?powiat=' + encodeURIComponent(value))
-                .then(r => r.json()).then(data => {
-                    data.forEach(g => {
-                        const opt = document.createElement('option');
-                        opt.value = g; opt.text = g;
-                        gminaSelect.appendChild(opt);
-                    });
-                    filterGmina.tomupdate && filterGmina.tomupdate();
-                });
+        if (!gmina) {
+            resultDiv.innerHTML = '<p class="text-sm text-pipl-steel">Wybierz gminę.</p>';
+            resultDiv.classList.remove('hidden');
+            return;
         }
+
+        btn.disabled = true;
+        btn.innerHTML = '<svg class="animate-spin inline-block h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Sprawdzam...';
+        resultDiv.innerHTML = '<div class="flex items-center gap-3 text-sm text-pipl-steel"><svg class="animate-spin h-5 w-5 text-pipl-red" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Sprawdzam dostępność gminy...</div>';
+        resultDiv.classList.remove('hidden');
+
+        fetch('/admin/check-gmina?gmina=' + encodeURIComponent(gmina))
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'free') {
+                    resultDiv.innerHTML = '<div class="rounded border border-green-200 bg-green-50 p-4">' +
+                        '<p class="text-sm font-bold text-green-800">Gmina ' + gmina + ' jest wolna.</p>' +
+                        '<p class="mt-1 text-xs text-green-700">Brak zaakceptowanych zgłoszeń w tej gminie.</p></div>';
+                } else if (data.status === 'taken') {
+                    resultDiv.innerHTML = '<div class="rounded border border-amber-200 bg-amber-50 p-4">' +
+                        '<p class="text-sm font-bold text-amber-800">Gmina ' + gmina + ' jest zajęta.</p>' +
+                        '<p class="mt-1 text-xs text-amber-700">Zaakceptowane zgłoszenie: <strong>' + data.lead.name + '</strong> (' + data.lead.company + ') — ' + data.lead.email + ', z ' + data.lead.created_at + '</p></div>';
+                } else {
+                    resultDiv.innerHTML = '<p class="text-sm text-pipl-steel">Podaj nazwę gminy.</p>';
+                }
+            })
+            .catch(() => {
+                resultDiv.innerHTML = '<div class="rounded border border-red-200 bg-red-50 p-4"><p class="text-sm font-bold text-red-800">Wystąpił błąd. Spróbuj ponownie.</p></div>';
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = 'Sprawdź';
+            });
     });
-
-    const filterGmina = new TomSelect('#filter-gmina', tsConfig);
-
-    function syncTomSelect(selectEl) {
-        if (selectEl.tomselect) selectEl.tomselect.destroy();
-        const ts = new TomSelect(selectEl, tsConfig);
-        selectEl.tomupdate = () => ts.destroy() || (selectEl.tomselect = new TomSelect(selectEl, tsConfig));
-    }
-
-    function reinitTomSelects() {
-        syncTomSelect(document.getElementById('filter-wojewodztwo'));
-        syncTomSelect(document.getElementById('filter-powiat'));
-        syncTomSelect(document.getElementById('filter-gmina'));
-    }
-
-    // Re-sync after filter submit preserves state
-    setTimeout(reinitTomSelects, 50);
 });
 </script>
 <style>

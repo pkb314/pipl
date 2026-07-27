@@ -28,7 +28,12 @@ Route::post('/admin/login', [AdminController::class, 'login']);
 Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/leady', [AdminController::class, 'index'])->name('leads');
     Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
+    Route::post('/leady/{lead}/accept', [AdminController::class, 'accept'])->name('leads.accept');
+    Route::post('/leady/{lead}/reject', [AdminController::class, 'reject'])->name('leads.reject');
+    Route::post('/leady/{lead}/status', [AdminController::class, 'updateStatus'])->name('leads.update-status');
 });
+
+Route::middleware('admin')->get('/admin/check-gmina', [AdminController::class, 'checkGmina'])->name('admin.leads.check-gmina');
 
 Route::prefix('platnosci/przelewy24')->name('payments.przelewy24.')->group(function () {
     Route::post('/start', [PaymentController::class, 'start'])->name('start');

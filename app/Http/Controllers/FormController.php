@@ -62,7 +62,7 @@ class FormController extends Controller
             ...$validated,
             'powiat' => $gminaRow?->powiat,
             'wojewodztwo' => $gminaRow?->wojewodztwo,
-            'status' => 'pending',
+            'status' => 'zgłoszone',
         ]);
 
         $token = Str::random(40);
