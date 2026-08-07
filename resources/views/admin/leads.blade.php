@@ -138,9 +138,10 @@
                 <tr class="border-b border-pipl-line bg-pipl-paper text-left text-xs font-black uppercase tracking-wide text-pipl-steel">
                     <th class="px-4 py-3">Data</th>
                     <th class="px-4 py-3">Imię i nazwisko</th>
-                    <th class="px-4 py-3">Firma</th>
+                    <th class="px-4 py-3">Branża / NIP</th>
                     <th class="px-4 py-3">Gmina</th>
                     <th class="px-4 py-3">Województwo</th>
+                    <th class="px-4 py-3">Telefon</th>
                     <th class="px-4 py-3">Źródło</th>
                     <th class="px-4 py-3">Etap</th>
                     <th class="px-4 py-3">Przypisane</th>
@@ -152,9 +153,10 @@
                     <tr class="cursor-pointer transition hover:bg-pipl-porcelain" onclick="window.location='{{ route('admin.leads.show', $lead) }}'">
                         <td class="whitespace-nowrap px-4 py-3 text-pipl-steel">{{ $lead->created_at->format('Y-m-d H:i') }}</td>
                         <td class="whitespace-nowrap px-4 py-3 font-bold">{{ $lead->name }} {{ $lead->surname }}</td>
-                        <td class="px-4 py-3 text-pipl-graphite">{{ $lead->company }}</td>
+                        <td class="px-4 py-3 text-pipl-graphite">{{ $lead->business_sector ?? '—' }}@if($lead->nip)<span class="block text-xs text-pipl-steel">NIP: {{ $lead->nip }}</span>@endif</td>
                         <td class="px-4 py-3 text-pipl-graphite">{{ $lead->gmina }}</td>
                         <td class="px-4 py-3 text-pipl-graphite">{{ $lead->wojewodztwo ?? '—' }}</td>
+                        <td class="whitespace-nowrap px-4 py-3 text-pipl-graphite">{{ $lead->phone }}</td>
                         <td class="whitespace-nowrap px-4 py-3">
                             @if ($lead->source === 'reczne')
                                 <span class="inline-block rounded-full bg-blue-50 px-2 py-1 text-[10px] font-bold text-blue-700">Ręczne</span>
@@ -177,7 +179,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="9" class="px-4 py-12 text-center text-pipl-steel">Brak zgłoszeń.</td>
+                        <td colspan="10" class="px-4 py-12 text-center text-pipl-steel">Brak zgłoszeń.</td>
                     </tr>
                 @endforelse
             </tbody>

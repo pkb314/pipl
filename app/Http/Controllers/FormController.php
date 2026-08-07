@@ -17,31 +17,59 @@ class FormController extends Controller
 {
     public function submitToBitrix(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $rules = [
+            'email' => 'required|email',
             'name' => 'required|string|max:50',
             'surname' => 'required|string|max:50',
-            'company' => 'required|string|max:100',
-            'adres' => 'required|string|max:255',
             'gmina' => 'required|string|max:100',
-            'about' => 'nullable|string|max:2000',
-            'email' => 'required|email',
+            'gmina_reason' => 'required|string|max:2000',
             'phone' => 'required|string|min:9',
-        ], [
-            'name.required' => 'Podaj swoje imię.',
-            'name.max' => 'Imię nie może być dłuższe niż :max znaków.',
-            'surname.required' => 'Podaj swoje nazwisko.',
-            'surname.max' => 'Nazwisko nie może być dłuższe niż :max znaków.',
-            'company.required' => 'Nazwa firmy jest konieczna do zgłoszenia.',
-            'company.max' => 'Nazwa firmy jest zbyt długa (max :max znaków).',
-            'adres.required' => 'Podaj adres firmy.',
-            'adres.max' => 'Adres jest zbyt długi (max :max znaków).',
-            'gmina.required' => 'Podaj gminę.',
-            'gmina.max' => 'Nazwa gminy jest zbyt długa (max :max znaków).',
+            'business_sector' => 'required|string|max:255',
+            'nip' => 'required|string|max:20',
+            'knows_entrepreneurs' => 'required|string|max:2000',
+            'own_business' => 'required|string|max:2000',
+            'meeting_new_people' => 'required|string|max:2000',
+            'organized_events' => 'required|string|max:2000',
+            'handling_refusal' => 'required|string|max:2000',
+            'local_government_contacts' => 'required|string|max:2000',
+            'working_style' => 'required|string|max:2000',
+            'weekly_time' => 'required|string|max:2000',
+            'motivation' => 'required|array|min:1',
+            'motivation.*' => 'string|max:200',
+            'motivation_other' => 'nullable|string|max:500',
+            'confidentiality' => 'required|string|max:2000',
+            'conflicts' => 'required|string|max:2000',
+            'why_you' => 'required|string|min:5|max:2000',
+            'additional_info' => 'nullable|string|max:2000',
+        ];
+
+        $messages = [
             'email.required' => 'Adres e-mail jest wymagany.',
             'email.email' => 'Wpisz poprawny adres e-mail (np. jan@firma.pl).',
+            'name.required' => 'Podaj swoje imię.',
+            'surname.required' => 'Podaj swoje nazwisko.',
+            'gmina.required' => 'Podaj gminę.',
+            'gmina_reason.required' => 'Napisz, dlaczego chcesz reprezentować właśnie tę gminę.',
             'phone.required' => 'Numer telefonu jest wymagany do kontaktu.',
             'phone.min' => 'Numer telefonu jest za krótki. Podaj co najmniej :min cyfr.',
-        ]);
+            'business_sector.required' => 'Podaj branżę swojej firmy.',
+            'nip.required' => 'Podaj NIP firmy.',
+            'knows_entrepreneurs.required' => 'Odpowiedz na to pytanie.',
+            'own_business.required' => 'Odpowiedz na to pytanie.',
+            'meeting_new_people.required' => 'Odpowiedz na to pytanie.',
+            'organized_events.required' => 'Odpowiedz na to pytanie.',
+            'handling_refusal.required' => 'Odpowiedz na to pytanie.',
+            'local_government_contacts.required' => 'Odpowiedz na to pytanie.',
+            'working_style.required' => 'Odpowiedz na to pytanie.',
+            'weekly_time.required' => 'Podaj, ile czasu możesz poświęcić na tę rolę.',
+            'motivation.required' => 'Wybierz przynajmniej jedną odpowiedź.',
+            'confidentiality.required' => 'Odpowiedz na to pytanie.',
+            'conflicts.required' => 'Odpowiedz na to pytanie.',
+            'why_you.required' => 'Napisz, dlaczego to właśnie Ty powinieneś/powinnaś zostać Koordynatorem Gminnym.',
+            'why_you.min' => 'Odpowiedź powinna mieć co najmniej :min znaków (2–5 zdań).',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return back()
@@ -51,6 +79,13 @@ class FormController extends Controller
         }
 
         $validated = $validator->validated();
+
+        $motivations = $validated['motivation'];
+        if (!empty($validated['motivation_other'])) {
+            $motivations[] = 'Inne: ' . $validated['motivation_other'];
+        }
+        $validated['motivation'] = implode(', ', $motivations);
+        unset($validated['motivation_other']);
 
         $gminaRow = DB::table('gminy')
             ->join('powiaty', 'powiaty.id', '=', 'gminy.powiat_id')

@@ -341,13 +341,13 @@
         <section id="formularz" class="bg-pipl-porcelain py-20 md:py-24">
             <div class="mx-auto grid max-w-7xl gap-10 px-4 md:px-6 lg:grid-cols-[.8fr_1.2fr]">
                 <div class="reveal">
-                    <p class="rule-label text-xs font-black uppercase text-pipl-red">Kontakt</p>
-                    <h2 class="mt-4 text-3xl font-black md:text-5xl">Zgłoś zainteresowanie członkostwem.</h2>
+                    <p class="rule-label text-xs font-black uppercase text-pipl-red">Zgłoszenie</p>
+                    <h2 class="mt-4 text-3xl font-black md:text-5xl">Zostań Koordynatorem Gminnym PIPL.</h2>
                     <p class="mt-5 text-lg leading-8 text-pipl-graphite">
-                        Po potwierdzeniu adresu e-mail skontaktujemy się, aby przedstawić zasady członkostwa, zakres współpracy i dalsze kroki.
+                        Po potwierdzeniu adresu e-mail skontaktujemy się, aby przedstawić zasady współpracy i dalsze kroki. Wszystkie pola formularza są wymagane.
                     </p>
                     <div class="mt-8 border-l-4 border-pipl-red bg-pipl-paper p-5 text-sm leading-6 text-pipl-graphite">
-                        Wysłanie formularza nie oznacza automatycznego przyjęcia do Izby. Członkostwo wymaga akceptacji dokumentów organizacji i decyzji właściwego organu.
+                        Wysłanie formularza nie oznacza automatycznego przyjęcia do Izby. O wyborze Koordynatora Gminnego decyduje właściwy organ na podstawie przesłanych odpowiedzi.
                     </div>
                 </div>
 
@@ -386,41 +386,239 @@
 
                             <form action="{{ route('form.submit') }}" method="POST" class="grid grid-cols-2 gap-4 md:gap-5">
                                 @csrf
-                                <div class="col-span-2 md:col-span-1">
-                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Imię</label>
-                                    <input type="text" name="name" value="{{ old('name') }}" class="field w-full rounded border @error('name') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100" placeholder="Jan" required>
-                                </div>
-                                <div class="col-span-2 md:col-span-1">
-                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Nazwisko</label>
-                                    <input type="text" name="surname" value="{{ old('surname') }}" class="field w-full rounded border @error('surname') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100" placeholder="Kowalski" required>
-                                </div>
                                 <div class="col-span-2">
-                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Nazwa firmy</label>
-                                    <input type="text" name="company" value="{{ old('company') }}" class="field w-full rounded border @error('company') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100" placeholder="Nazwa przedsiębiorstwa" required>
-                                </div>
-                                <div class="col-span-2 md:col-span-1">
-                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Adres</label>
-                                    <input type="text" name="adres" value="{{ old('adres') }}" class="field w-full rounded border @error('adres') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100" placeholder="Ulica, numer, kod pocztowy, miasto" required>
-                                </div>
-                                <div class="col-span-2 md:col-span-1">
-                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Gmina</label>
-                                    <select id="gmina-select" placeholder="Nazwa gminy" required></select>
-                                    <input type="hidden" name="gmina" id="gmina-hidden" value="{{ old('gmina') }}">
-                                </div>
-                                <div class="col-span-2 md:col-span-1">
-                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Telefon</label>
-                                    <input type="tel" name="phone" value="{{ old('phone') }}" class="field w-full rounded border @error('phone') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100" placeholder="+48 000 000 000" required>
-                                </div>
-                                <div class="col-span-2 md:col-span-1">
-                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">E-mail</label>
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Email address *</label>
                                     <input type="email" name="email" value="{{ old('email') }}" class="field w-full rounded border @error('email') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100" placeholder="adres@firma.pl" required>
                                 </div>
                                 <div class="col-span-2">
-                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Napisz coś o sobie</label>
-                                    <textarea name="about" rows="4" class="field w-full rounded border @error('about') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100 resize-none" placeholder="Opisz swoją działalność, doświadczenie, oczekiwania wobec Izby...">{{ old('about') }}</textarea>
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Imię i nazwisko *</label>
+                                    <input type="text" name="name" value="{{ old('name') }}" class="field w-full rounded border @error('name') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100" placeholder="Jan Kowalski" required>
+                                    <input type="hidden" name="surname" value="">
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Gmina, którą chcesz reprezentować i dlaczego właśnie ta gmina? *</label>
+                                    <div class="grid grid-cols-1 gap-4">
+                                        <div>
+                                            <label class="mb-2 block text-sm font-semibold text-pipl-steel">Gmina</label>
+                                            <select id="gmina-select" placeholder="Nazwa gminy" required></select>
+                                            <input type="hidden" name="gmina" id="gmina-hidden" value="{{ old('gmina') }}">
+                                        </div>
+                                        <div>
+                                            <label class="mb-2 block text-sm font-semibold text-pipl-steel">Dlaczego właśnie ta gmina?</label>
+                                            <textarea name="gmina_reason" rows="3" class="field w-full rounded border @error('gmina_reason') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100 resize-none" placeholder="Napisz kilka zdań..." required>{{ old('gmina_reason') }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Telefon *</label>
+                                    <input type="tel" name="phone" value="{{ old('phone') }}" class="field w-full rounded border @error('phone') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100" placeholder="+48 000 000 000" required>
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Branża firmy, którą prowadzisz i NIP firmy *</label>
+                                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                        <input type="text" name="business_sector" value="{{ old('business_sector') }}" class="field w-full rounded border @error('business_sector') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100" placeholder="Branża (np. gastronomia, budownictwo)" required>
+                                        <input type="text" name="nip" value="{{ old('nip') }}" class="field w-full rounded border @error('nip') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100" placeholder="NIP" required>
+                                    </div>
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Jak dobrze znasz lokalnych przedsiębiorców w swojej gminie? *</label>
+                                    <div class="space-y-2">
+                                        @foreach ([
+                                            'Znam większość z nich osobiście',
+                                            'Znam część z nich',
+                                            'Dopiero zaczynam budować sieć kontaktów',
+                                            'Nie mam takich kontaktów',
+                                        ] as $option)
+                                            <label class="flex items-start gap-3 rounded border border-pipl-line bg-pipl-paper px-4 py-3 text-sm font-semibold text-pipl-graphite">
+                                                <input type="radio" name="knows_entrepreneurs" value="{{ $option }}" @checked(old('knows_entrepreneurs') === $option) class="mt-1 text-pipl-red focus:ring-pipl-red">
+                                                {{ $option }}
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Czy sam/a prowadzisz lub prowadziłeś/aś działalność gospodarczą? *</label>
+                                    <div class="space-y-2">
+                                        @foreach ([
+                                            'Tak, aktywnie prowadzę',
+                                            'Prowadziłem/am w przeszłości',
+                                            'Nie, ale pracuję blisko środowiska biznesowego',
+                                            'Nie mam takiego doświadczenia',
+                                            'Mam zawieszoną działalność',
+                                        ] as $option)
+                                            <label class="flex items-start gap-3 rounded border border-pipl-line bg-pipl-paper px-4 py-3 text-sm font-semibold text-pipl-graphite">
+                                                <input type="radio" name="own_business" value="{{ $option }}" @checked(old('own_business') === $option) class="mt-1 text-pipl-red focus:ring-pipl-red">
+                                                {{ $option }}
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Gdy spotykasz nową osobę w środowisku biznesowym, jak zwykle postępujesz? *</label>
+                                    <div class="space-y-2">
+                                        @foreach ([
+                                            'Inicjuję rozmowę i wychodzę z propozycją współpracy',
+                                            'Chętnie rozmawiam, gdy ktoś zagadnie',
+                                            'Wolę obserwować i stopniowo wchodzić w relacje',
+                                            'Networking jest dla mnie trudny',
+                                        ] as $option)
+                                            <label class="flex items-start gap-3 rounded border border-pipl-line bg-pipl-paper px-4 py-3 text-sm font-semibold text-pipl-graphite">
+                                                <input type="radio" name="meeting_new_people" value="{{ $option }}" @checked(old('meeting_new_people') === $option) class="mt-1 text-pipl-red focus:ring-pipl-red">
+                                                {{ $option }}
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Czy organizowałeś/aś kiedyś spotkania, eventy lub zebrania — nawet nieformalne? *</label>
+                                    <div class="space-y-2">
+                                        @foreach ([
+                                            'Tak, regularnie i na większą skalę',
+                                            'Tak, kilka razy',
+                                            'Raz lub dwa, przy okazji',
+                                            'Nie organizowałem/am',
+                                        ] as $option)
+                                            <label class="flex items-start gap-3 rounded border border-pipl-line bg-pipl-paper px-4 py-3 text-sm font-semibold text-pipl-graphite">
+                                                <input type="radio" name="organized_events" value="{{ $option }}" @checked(old('organized_events') === $option) class="mt-1 text-pipl-red focus:ring-pipl-red">
+                                                {{ $option }}
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Jak reagujesz, gdy ktoś odmawia lub nie jest zainteresowany Twoją propozycją? *</label>
+                                    <div class="space-y-2">
+                                        @foreach ([
+                                            'Akceptuję spokojnie i wracam po czasie',
+                                            'Trochę mnie to frustruje, ale daję radę',
+                                            'Trudno mi po odmowie wrócić do tej osoby',
+                                            'Odmowa mocno mnie zniechęca',
+                                        ] as $option)
+                                            <label class="flex items-start gap-3 rounded border border-pipl-line bg-pipl-paper px-4 py-3 text-sm font-semibold text-pipl-graphite">
+                                                <input type="radio" name="handling_refusal" value="{{ $option }}" @checked(old('handling_refusal') === $option) class="mt-1 text-pipl-red focus:ring-pipl-red">
+                                                {{ $option }}
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Czy masz kontakty lub relacje z lokalnym samorządem, urzędem gminy? *</label>
+                                    <div class="space-y-2">
+                                        @foreach ([
+                                            'Tak, aktywnie współpracuję lub współpracowałem/am',
+                                            'Znam kilka osób z urzędu',
+                                            'Nie mam relacji, ale nie mam też oporów',
+                                            'Unikam kontaktów z urzędami',
+                                        ] as $option)
+                                            <label class="flex items-start gap-3 rounded border border-pipl-line bg-pipl-paper px-4 py-3 text-sm font-semibold text-pipl-graphite">
+                                                <input type="radio" name="local_government_contacts" value="{{ $option }}" @checked(old('local_government_contacts') === $option) class="mt-1 text-pipl-red focus:ring-pipl-red">
+                                                {{ $option }}
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Jak opisałbyś/abyś swój styl działania? *</label>
+                                    <div class="space-y-2">
+                                        @foreach ([
+                                            'Działam z własnej inicjatywy, nie czekam na instrukcje',
+                                            'Dobrze mi z ramowym planem i swobodą wykonania',
+                                            'Wolę mieć szczegółowe wytyczne co do każdego kroku',
+                                            'Dobrze mi w rolach ściśle określonych z zewnątrz',
+                                        ] as $option)
+                                            <label class="flex items-start gap-3 rounded border border-pipl-line bg-pipl-paper px-4 py-3 text-sm font-semibold text-pipl-graphite">
+                                                <input type="radio" name="working_style" value="{{ $option }}" @checked(old('working_style') === $option) class="mt-1 text-pipl-red focus:ring-pipl-red">
+                                                {{ $option }}
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Ile czasu tygodniowo możesz realistycznie poświęcić na tę rolę? *</label>
+                                    <div class="space-y-2">
+                                        @foreach ([
+                                            '3–5 godzin lub więcej',
+                                            '1–3 godziny tygodniowo',
+                                            'Kilkadziesiąt minut, przy okazji innych aktywności',
+                                            'Trudno mi to teraz ocenić',
+                                        ] as $option)
+                                            <label class="flex items-start gap-3 rounded border border-pipl-line bg-pipl-paper px-4 py-3 text-sm font-semibold text-pipl-graphite">
+                                                <input type="radio" name="weekly_time" value="{{ $option }}" @checked(old('weekly_time') === $option) class="mt-1 text-pipl-red focus:ring-pipl-red">
+                                                {{ $option }}
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Co motywuje Cię do objęcia tej roli? (możesz zaznaczyć kilka odpowiedzi) *</label>
+                                    @php
+                                        $motivationOptions = [
+                                            'Chcę budować relacje w lokalnym środowisku przedsiębiorców',
+                                            'Chcę mieć realny wpływ na lokalny biznes i samorząd',
+                                            'Interesuje mnie możliwość zarobku prowizyjnego',
+                                            'Chcę wzmocnić swoją markę osobistą i pozycję w gminie',
+                                            'Wierzę w misję PIPL i chcę ją reprezentować',
+                                        ];
+                                        $oldMotivation = old('motivation', []);
+                                    @endphp
+                                    <div class="space-y-2">
+                                        @foreach ($motivationOptions as $option)
+                                            <label class="flex items-start gap-3 rounded border border-pipl-line bg-pipl-paper px-4 py-3 text-sm font-semibold text-pipl-graphite">
+                                                <input type="checkbox" name="motivation[]" value="{{ $option }}" @checked(in_array($option, $oldMotivation)) class="mt-1 rounded border-pipl-line text-pipl-red focus:ring-pipl-red">
+                                                {{ $option }}
+                                            </label>
+                                        @endforeach
+                                        <label class="flex items-start gap-3 rounded border border-pipl-line bg-pipl-paper px-4 py-3 text-sm font-semibold text-pipl-graphite">
+                                            <input type="checkbox" name="motivation[]" value="Inne" @checked(in_array('Inne', $oldMotivation)) class="mt-1 rounded border-pipl-line text-pipl-red focus:ring-pipl-red">
+                                            Inne
+                                        </label>
+                                        <div class="pl-8">
+                                            <input type="text" name="motivation_other" value="{{ old('motivation_other') }}" class="field w-full rounded border @error('motivation_other') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-3 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100" placeholder="Jeśli zaznaczyłeś/aś „Inne", wpisz co..." @required(in_array('Inne', $oldMotivation))>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Czy zdarzało Ci się zachować w tajemnicy informacje powierzone przez kogoś - nawet pod presją? *</label>
+                                    <div class="space-y-2">
+                                        @foreach ([
+                                            'Tak, dyskrecja to dla mnie podstawa',
+                                            'Zazwyczaj tak, choć nie zawsze jest łatwo',
+                                            'Nie zawsze - czasem czuję potrzebę podzielenia się',
+                                            'Rzadko kiedy udaje mi się utrzymać tajemnicę',
+                                        ] as $option)
+                                            <label class="flex items-start gap-3 rounded border border-pipl-line bg-pipl-paper px-4 py-3 text-sm font-semibold text-pipl-graphite">
+                                                <input type="radio" name="confidentiality" value="{{ $option }}" @checked(old('confidentiality') === $option) class="mt-1 text-pipl-red focus:ring-pipl-red">
+                                                {{ $option }}
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Czy masz aktywne konflikty lub napięcia w lokalnym środowisku biznesowym? *</label>
+                                    <div class="space-y-2">
+                                        @foreach ([
+                                            'Nie, mam dobre relacje ze wszystkimi',
+                                            'Są drobne tarcia, ale nic poważnego',
+                                            'Jest kilka trudnych relacji, nad którymi pracuję',
+                                            'Tak, mam poważny konflikt z kimś w środowisku',
+                                        ] as $option)
+                                            <label class="flex items-start gap-3 rounded border border-pipl-line bg-pipl-paper px-4 py-3 text-sm font-semibold text-pipl-graphite">
+                                                <input type="radio" name="conflicts" value="{{ $option }}" @checked(old('conflicts') === $option) class="mt-1 text-pipl-red focus:ring-pipl-red">
+                                                {{ $option }}
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Dlaczego akurat Ty powinieneś/powinnaś zostać Koordynatorem Gminnym PIPL w swojej gminie? (Napisz 2–5 zdań) *</label>
+                                    <textarea name="why_you" rows="4" class="field w-full rounded border @error('why_you') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100 resize-none" placeholder="Twoja odpowiedź..." required>{{ old('why_you') }}</textarea>
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="mb-2 block text-sm font-bold text-pipl-graphite">Czy jest coś, o czym chciałbyś/chciałabyś nas poinformować przed rozmową? *</label>
+                                    <textarea name="additional_info" rows="3" class="field w-full rounded border @error('additional_info') border-red-500 bg-red-50 @else border-pipl-line bg-pipl-porcelain @enderror p-4 text-base focus:border-pipl-red focus:outline-none focus:ring-4 focus:ring-red-100 resize-none" placeholder="Twoja odpowiedź (jeśli nie, napisz „nie")..." required>{{ old('additional_info') }}</textarea>
                                 </div>
                                 <div class="col-span-2 border border-pipl-line bg-pipl-paper p-4 text-sm leading-6 text-pipl-graphite">
-                                    Dane wykorzystamy wyłącznie do obsługi zgłoszenia i kontaktu w sprawie członkostwa. Szczegóły opisuje <a href="{{ route('legal.privacy') }}" class="font-bold text-pipl-red underline">polityka prywatności</a>, a zasady członkostwa określa <a href="{{ route('legal.terms') }}" class="font-bold text-pipl-red underline">regulamin</a>.
+                                    Dane wykorzystamy wyłącznie do obsługi zgłoszenia i kontaktu w sprawie współpracy. Szczegóły opisuje <a href="{{ route('legal.privacy') }}" class="font-bold text-pipl-red underline">polityka prywatności</a>, a zasady działania określa <a href="{{ route('legal.terms') }}" class="font-bold text-pipl-red underline">regulamin</a>.
                                 </div>
                                 <div class="col-span-2">
                                     <button type="submit" class="w-full rounded bg-pipl-red px-6 py-4 text-base font-black text-white transition hover:bg-pipl-redDark">
