@@ -30,7 +30,9 @@ class AdminController extends Controller
                     ->orWhere('company', 'ilike', "%{$search}%")
                     ->orWhere('email', 'ilike', "%{$search}%")
                     ->orWhere('gmina', 'ilike', "%{$search}%")
-                    ->orWhere('phone', 'ilike', "%{$search}%");
+                    ->orWhere('phone', 'ilike', "%{$search}%")
+                    ->orWhere('business_sector', 'ilike', "%{$search}%")
+                    ->orWhere('nip', 'ilike', "%{$search}%");
             });
         }
 
@@ -84,12 +86,28 @@ class AdminController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:50',
             'surname' => 'required|string|max:50',
-            'company' => 'required|string|max:100',
-            'adres' => 'required|string|max:255',
+            'company' => 'nullable|string|max:100',
+            'adres' => 'nullable|string|max:255',
             'gmina' => 'required|string|max:100',
+            'gmina_reason' => 'nullable|string|max:2000',
             'about' => 'nullable|string|max:2000',
             'email' => 'required|email',
             'phone' => 'required|string|min:9',
+            'business_sector' => 'nullable|string|max:255',
+            'nip' => 'nullable|string|max:20',
+            'knows_entrepreneurs' => 'nullable|string|max:2000',
+            'own_business' => 'nullable|string|max:2000',
+            'meeting_new_people' => 'nullable|string|max:2000',
+            'organized_events' => 'nullable|string|max:2000',
+            'handling_refusal' => 'nullable|string|max:2000',
+            'local_government_contacts' => 'nullable|string|max:2000',
+            'working_style' => 'nullable|string|max:2000',
+            'weekly_time' => 'nullable|string|max:2000',
+            'motivation' => 'nullable|string|max:2000',
+            'confidentiality' => 'nullable|string|max:2000',
+            'conflicts' => 'nullable|string|max:2000',
+            'why_you' => 'nullable|string|max:2000',
+            'additional_info' => 'nullable|string|max:2000',
             'status' => 'required|in:zgłoszone,zaakceptowane,odrzucone',
             'stage' => 'nullable|in:' . implode(',', self::STAGES),
             'assigned_to' => 'nullable|exists:users,id',

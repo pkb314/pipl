@@ -37,28 +37,9 @@
                 </div>
 
                 <div>
-                    <label class="mb-1 block text-xs font-bold text-pipl-steel">Firma</label>
-                    <input type="text" name="company" value="{{ old('company', $lead->company) }}" required class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none">
-                </div>
-
-                <div>
-                    <label class="mb-1 block text-xs font-bold text-pipl-steel">Adres</label>
-                    <input type="text" name="adres" value="{{ old('adres', $lead->adres) }}" required class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none">
-                </div>
-
-                <div class="grid grid-cols-3 gap-4">
-                    <div>
-                        <label class="mb-1 block text-xs font-bold text-pipl-steel">Gmina</label>
-                        <input type="text" name="gmina" value="{{ old('gmina', $lead->gmina) }}" required class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="mb-1 block text-xs font-bold text-pipl-steel">Powiat</label>
-                        <input type="text" value="{{ $lead->powiat ?? '—' }}" readonly class="w-full rounded border border-pipl-line bg-pipl-paper p-3 text-sm text-pipl-steel">
-                    </div>
-                    <div>
-                        <label class="mb-1 block text-xs font-bold text-pipl-steel">Województwo</label>
-                        <input type="text" value="{{ $lead->wojewodztwo ?? '—' }}" readonly class="w-full rounded border border-pipl-line bg-pipl-paper p-3 text-sm text-pipl-steel">
-                    </div>
+                    <label class="mb-1 block text-xs font-bold text-pipl-steel">Gmina</label>
+                    <input type="text" name="gmina" value="{{ old('gmina', $lead->gmina) }}" required class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none">
+                    <p class="mt-1 text-xs text-pipl-steel">Powiat: {{ $lead->powiat ?? '—' }} | Województwo: {{ $lead->wojewodztwo ?? '—' }}</p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
@@ -70,6 +51,74 @@
                         <label class="mb-1 block text-xs font-bold text-pipl-steel">E-mail</label>
                         <input type="email" name="email" value="{{ old('email', $lead->email) }}" required class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none">
                     </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="mb-1 block text-xs font-bold text-pipl-steel">Branża firmy</label>
+                        <input type="text" name="business_sector" value="{{ old('business_sector', $lead->business_sector) }}" class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-xs font-bold text-pipl-steel">NIP</label>
+                        <input type="text" name="nip" value="{{ old('nip', $lead->nip) }}" class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="mb-1 block text-xs font-bold text-pipl-steel">Gmina, którą chcesz reprezentować i dlaczego właśnie ta gmina</label>
+                    <textarea name="gmina_reason" rows="3" class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none resize-none">{{ old('gmina_reason', $lead->gmina_reason) }}</textarea>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-bold text-pipl-steel">Jak dobrze znasz lokalnych przedsiębiorców w swojej gminie?</label>
+                    <textarea name="knows_entrepreneurs" rows="3" class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none resize-none">{{ old('knows_entrepreneurs', $lead->knows_entrepreneurs) }}</textarea>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-bold text-pipl-steel">Czy sam/a prowadzisz lub prowadziłeś/aś działalność gospodarczą?</label>
+                    <textarea name="own_business" rows="3" class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none resize-none">{{ old('own_business', $lead->own_business) }}</textarea>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-bold text-pipl-steel">Gdy spotykasz nową osobę w środowisku biznesowym, jak zwykle postępujesz?</label>
+                    <textarea name="meeting_new_people" rows="3" class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none resize-none">{{ old('meeting_new_people', $lead->meeting_new_people) }}</textarea>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-bold text-pipl-steel">Czy organizowałeś/aś kiedyś spotkania, eventy lub zebrania — nawet nieformalne?</label>
+                    <textarea name="organized_events" rows="3" class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none resize-none">{{ old('organized_events', $lead->organized_events) }}</textarea>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-bold text-pipl-steel">Jak reagujesz, gdy ktoś odmawia lub nie jest zainteresowany Twoją propozycją?</label>
+                    <textarea name="handling_refusal" rows="3" class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none resize-none">{{ old('handling_refusal', $lead->handling_refusal) }}</textarea>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-bold text-pipl-steel">Czy masz kontakty lub relacje z lokalnym samorządem, urzędem gminy?</label>
+                    <textarea name="local_government_contacts" rows="3" class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none resize-none">{{ old('local_government_contacts', $lead->local_government_contacts) }}</textarea>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-bold text-pipl-steel">Jak opisałbyś/abyś swój styl działania?</label>
+                    <textarea name="working_style" rows="3" class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none resize-none">{{ old('working_style', $lead->working_style) }}</textarea>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-bold text-pipl-steel">Ile czasu tygodniowo możesz realistycznie poświęcić na tę rolę?</label>
+                    <textarea name="weekly_time" rows="3" class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none resize-none">{{ old('weekly_time', $lead->weekly_time) }}</textarea>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-bold text-pipl-steel">Co motywuje Cię do objęcia tej roli?</label>
+                    <textarea name="motivation" rows="3" class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none resize-none">{{ old('motivation', $lead->motivation) }}</textarea>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-bold text-pipl-steel">Czy zdarzało Ci się zachować w tajemnicy informacje powierzone przez kogoś - nawet pod presją?</label>
+                    <textarea name="confidentiality" rows="3" class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none resize-none">{{ old('confidentiality', $lead->confidentiality) }}</textarea>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-bold text-pipl-steel">Czy masz aktywne konflikty lub napięcia w lokalnym środowisku biznesowym?</label>
+                    <textarea name="conflicts" rows="3" class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none resize-none">{{ old('conflicts', $lead->conflicts) }}</textarea>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-bold text-pipl-steel">Dlaczego akurat Ty powinieneś/powinnaś zostać Koordynatorem Gminnym PIPL w swojej gminie? (2–5 zdań)</label>
+                    <textarea name="why_you" rows="3" class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none resize-none">{{ old('why_you', $lead->why_you) }}</textarea>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-bold text-pipl-steel">Czy jest coś, o czym chciałbyś/chciałabyś nas poinformować przed rozmową?</label>
+                    <textarea name="additional_info" rows="3" class="w-full rounded border border-pipl-line bg-pipl-porcelain p-3 text-sm focus:border-pipl-red focus:outline-none resize-none">{{ old('additional_info', $lead->additional_info) }}</textarea>
                 </div>
 
                 <div>
